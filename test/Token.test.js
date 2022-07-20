@@ -22,6 +22,7 @@ contract('Token', ([deployer, receiver]) =>{
 
     let token
     //Mocha allow us to fetch token before any test run 
+   
     beforeEach(async()=>{
         token = await Token.new() // everytime will deploy a Token to BC
     })
@@ -57,29 +58,45 @@ contract('Token', ([deployer, receiver]) =>{
     })
 
     describe('sending Tokens',() =>{
-
+        describe('sucess', async() =>{
         let amount
         let result
         beforeEach(async() =>{
-            amount = tokens(100)
-            result = await token.Transfer(receiver, tokens(100), {from : deployer})
-        });
-        it ('transfer token balances', async()=>{
-            let balanceOf
-            balanceOf  = await token._balances(receiver)
-            console.log("receiver balance after transfer", balanceOf.toString())
-            balanceOf = await token._balances(deployer)
-            console.log("deployer balance after transfer ", balanceOf.toString())
+                amount = tokens(100)
+                result = await token.Transfer(receiver, tokens(100), {from : deployer})
+            });
+            it ('transfer token balances', async()=>{
+                let balanceOf
+                balanceOf  = await token._balances(receiver)
+                console.log("receiver balance after transfer", balanceOf.toString())
+                balanceOf = await token._balances(deployer)
+                console.log("deployer balance after transfer ", balanceOf.toString())
+            })
+            it ('emit Transfer', async()=>{
+                const log = result.logs[0]
+                log.event.should.equal('transfer')
+                const event = log.args
+                event.from.toString().should.equal(deployer, 'from is correct')
+                event.to.toString().should.equal(receiver, 'to is correct')
+                event.amount.toString().should.equal(amount.toString(), 'value is correct')
+                // console.log(event)
+            })
         })
-        it ('emit Transfer', async()=>{
-            const log = result.logs[0]
-            log.event.should.equal('transfer')
-            const event = log.args
-            event.from.toString().should.equal(deployer, 'from is correct')
-            event.to.toString().should.equal(receiver, 'to is correct')
-            event.amount.toString().should.equal(amount.toString(), 'value is correct')
-            // console.log(event)
+        describe('failure', async() =>{
+            it ('rejects insufissient balances', async() =>{
+                let invalidAmount
+                invalidAmount = tokens(10000000000000) // greater than the total supply
+                await token.Transfer(receiver, invalidAmount, {from : deployer}).should.be.rejectedWith('ERC20: transfer amount exceeds balance');
+            })
+            it ('rejects invalid receipient', async() =>{
+                let invalidAmount
+                invalidAmount = tokens(10000000000000) // greater than the total supply
+                const address0 = '0x0000000000000000000000000000000000000000'
+                await token.Transfer(address0, invalidAmount, {from : deployer}).should.be.rejected;
+   
+            })
         })
+       
         
     })
 })

@@ -25,11 +25,12 @@ contract Token
     function Transfer(address to,uint256 amount) public returns (bool success)
     {
         // require(from != address(0), "ERC20: transfer from the zero address");
+        
         require(to != address(0), "ERC20: transfer to the zero address");
-
-
         uint256 fromBalance = _balances[msg.sender];
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        
+
         unchecked {
             _balances[msg.sender] = fromBalance - amount;
             // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
