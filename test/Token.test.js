@@ -1,16 +1,18 @@
 var ethers = require('ethers');
 const Token = artifacts.require("./Token");
 
+
 require('chai')
 .use(require('chai-as-promised'))
 .should()
 
+
 const tokens = (n) =>
 {
-    console.log(ethers.utils.formatEther(n))
-    return ethers.utils.formatEther(n)
+    // convertfrom ether to wei
+    return ethers.utils.parseUnits(n.toString(), 18)
+   
 }
-
 contract('Token', ([deployer, receiver]) =>{
 
     const Name = 'Abdel Token'
@@ -18,74 +20,65 @@ contract('Token', ([deployer, receiver]) =>{
     const Decimals = '18'
     const TotalSupply = tokens(1000000).toString()
 
-   
-
+    let token
     //Mocha allow us to fetch token before any test run 
-    // BeforeEach(async()=>{
-    //     const token = await Token.new() // everytime will deploy a Token to BC
-    // })
+    beforeEach(async()=>{
+        token = await Token.new() // everytime will deploy a Token to BC
+    })
 
     describe('deployment', ()=>{
         // read token name and check it 
         //fetch account from BC read it and check it
         it('track the name', async () =>{ 
-            const token = await Token.new()
-           
             const result = await token._name()
             result.should.equal(Name)
         })
-
         it ('track the symbol', async()=>{
-            const token = await Token.new()
-            
             const result = await token.symbol()
             result.should.equal(Symbol)
         })
 
         it ('track the decimal', async()=>{
-            const token = await Token.new()
-            
             const result = await token.decimals()
             result.toString().should.equal(Decimals)
         })
 
         it ('track the total supply', async()=>{
-            const token = await Token.new()
-        
             const result = await token.total_supply()
-            result.toString().should.equal(TotalSupply)
-        })
-
-        it ('assign total supply to deployer', async()=>{
-            const token = await Token.new()
-        
-            const result = await token._balances(deployer)
+            console.log("TOTAL SUPPLY OF THE CONTRACT",result.toString());
+            console.log("TOTAL SUPPLY OF TESTING",TotalSupply);
             result.toString().should.equal(TotalSupply.toString())
         })
 
-
-
+        it ('assign total supply to deployer', async()=>{
+            const result = await token._balances(deployer)
+            result.toString().should.equal(TotalSupply.toString())
+        })
     })
+
     describe('sending Tokens',() =>{
 
+        let amount
+        let result
+        beforeEach(async() =>{
+            amount = tokens(100)
+            result = await token.Transfer(receiver, tokens(100), {from : deployer})
+        });
         it ('transfer token balances', async()=>{
-            const token = await Token.new()
             let balanceOf
-            balanceOf  = await token._balances(receiver)
-            console.log("receiver balance before transfer", balanceOf.toString())
-            balanceOf = await token._balances(deployer)
-            console.log("deployer balance before transfer ", balanceOf.toString())
-            // const result = await token.symbol()
-            // result.should.equal(Symbol)
-            //TRANSFER
-
-            await token.transfer(receiver, tokens(100), {from : deployer})
-
             balanceOf  = await token._balances(receiver)
             console.log("receiver balance after transfer", balanceOf.toString())
             balanceOf = await token._balances(deployer)
             console.log("deployer balance after transfer ", balanceOf.toString())
-
+        })
+        it ('emit Transfer', async()=>{
+            const log = result.logs[0]
+            log.event.should.equal('transfer')
+            const event = log.args
+            event.from.toString().should.equal(deployer, 'from is correct')
+            event.to.toString().should.equal(receiver, 'to is correct')
+            event.amount.toString().should.equal(amount.toString(), 'value is correct')
+            // console.log(event)
         })
         
     })

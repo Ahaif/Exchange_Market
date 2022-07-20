@@ -4,27 +4,25 @@ pragma solidity ^0.8.0;
 
 contract Token
 {
+    //variables
     string public _name = "Abdel Token";
     string public symbol = "HAI";
     uint256 public decimals = 18;
     uint256 public total_supply;
-
     mapping(address => uint256) public _balances;
+
+    //event
+    event transfer(address indexed from, address indexed to, uint256 amount);
 
     constructor() 
     {
         // and we should multiplie by decimals to use fractional part
-        total_supply = 1000000 * (10** decimals);
+        total_supply = 1000000 * (10 ** decimals);
         _balances[msg.sender] = total_supply;
 
     }
-
-    // // function balanceOf(address account) public view virtual returns (uint256) {
-    // //     return _balances[account];
-    // }
-
     //better to use safe math and reantrancy guard compiler sol include safemath 0.8.0
-    function transfer(address to,uint256 amount) public returns (bool success)
+    function Transfer(address to,uint256 amount) public returns (bool success)
     {
         // require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
@@ -38,7 +36,7 @@ contract Token
             // decrementing then incrementing.
             _balances[to] += amount;
         }
+        emit transfer(msg.sender, to, amount);
         return true;
-        // emit transfer(to, amount);
     }
 }
