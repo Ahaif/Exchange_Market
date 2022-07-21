@@ -13,7 +13,7 @@ const tokens = (n) =>
     return ethers.utils.parseUnits(n.toString(), 18)
    
 }
-contract('Token', ([deployer, receiver]) =>{
+contract('Token', ([deployer, receiver, exchange]) =>{
 
     const Name = 'Abdel Token'
     const Symbol = 'HAI'
@@ -46,8 +46,8 @@ contract('Token', ([deployer, receiver]) =>{
 
         it ('track the total supply', async()=>{
             const result = await token.total_supply()
-            console.log("TOTAL SUPPLY OF THE CONTRACT",result.toString());
-            console.log("TOTAL SUPPLY OF TESTING",TotalSupply);
+            // console.log("TOTAL SUPPLY OF THE CONTRACT",result.toString());
+            // console.log("TOTAL SUPPLY OF TESTING",TotalSupply);
             result.toString().should.equal(TotalSupply.toString())
         })
 
@@ -62,15 +62,15 @@ contract('Token', ([deployer, receiver]) =>{
         let amount
         let result
         beforeEach(async() =>{
-                amount = tokens(100)
-                result = await token.Transfer(receiver, tokens(100), {from : deployer})
+                amount = tokens(1)
+                result = await token.Transfer(receiver, amount, {from : deployer})
             });
             it ('transfer token balances', async()=>{
                 let balanceOf
                 balanceOf  = await token._balances(receiver)
-                console.log("receiver balance after transfer", balanceOf.toString())
+                // console.log("receiver balance after transfer", balanceOf.toString())
                 balanceOf = await token._balances(deployer)
-                console.log("deployer balance after transfer ", balanceOf.toString())
+                // console.log("deployer balance after transfer ", balanceOf.toString())
             })
             it ('emit Transfer', async()=>{
                 const log = result.logs[0]
@@ -99,4 +99,97 @@ contract('Token', ([deployer, receiver]) =>{
        
         
     })
+    describe('approving tokens',() =>{
+        let result 
+        let amount
+
+        beforeEach(async () => {
+            amount = tokens(100)
+            result = await token.approve(deployer, exchange, amount)
+        })
+
+        describe('success',  () =>{
+            it('allocates an allowance for the delegate token spending', async() =>{
+                const allowance = await token.allowance(deployer, exchange)
+                allowance.toString().should.equal(amount.toString())
+            })
+            it ('emit an Approval event', async()=>{
+                const log = result.logs[0]
+                log.event.should.equal('Approval')
+                const event = log.args
+                event.owner.toString().should.equal(deployer, 'from is correct')
+                event.spender.toString().should.equal(exchange, 'to is correct')
+                event.value.toString().should.equal(amount.toString(), 'value is correct')
+                // console.log(event)
+            })
+
+
+        })
+        describe('failure', () =>{
+            it ('rejects invalid spender', async() =>{
+                let invalidAmount
+                invalidAmount = tokens(10000000000000) // greater than the total supply
+                const address0 = '0x0000000000000000000000000000000000000000'
+                await token.approve(address0, invalidAmount, {from : deployer}).should.be.rejected;
+   
+            })
+
+
+        })
+        
+    })
+
+    describe('sending allowance Tokens',() =>{
+        let amount
+        let result
+        beforeEach(async() =>{
+            amount = tokens(1)
+            await token.approve(deployer, exchange, amount)
+        });
+        describe('sucess', async() =>{
+       
+        beforeEach(async() =>{
+                result = await token.transferFrom(deployer, receiver, amount, {from : exchange})
+            });
+            it ('transfer token balances', async()=>{
+                let balanceOf
+                balanceOf  = await token._balances(receiver)
+                // console.log("receiver balance after transfer", balanceOf.toString())
+                balanceOf = await token._balances(deployer)
+                // console.log("deployer balance after transfer ", balanceOf.toString())
+            })
+            it('decrease  allowance', async() =>{
+                const allowance = await token.allowance(deployer, exchange)
+                allowance.toString().should.equal('0')
+            })
+            it ('emit Transfer', async()=>{
+                const log = result.logs[0]
+                log.event.should.equal('Approval')
+                const event = log.args
+                event.owner.toString().should.equal(deployer, 'from is correct')
+                event.spender.toString().should.equal(exchange, 'to is correct')
+                // // event.value.toString().should.equal(amount.toString(), 'value is correct')
+                // console.log(event.value.toString())
+                // // console.log(event)
+            })
+        })
+        describe('failure', async() =>{
+            it ('rejects insufissient balances', async() =>{
+                let invalidAmount
+                invalidAmount = tokens(10000000000000) // greater than the total supply
+                await token.transferFrom(deployer, receiver, invalidAmount, {from : exchange}).should.be.rejectedWith('revert ERC20: insufficient allowance');
+            })
+            it ('rejects invalid receipient', async() =>{
+                let invalidAmount
+                invalidAmount = tokens(10000000000000) // greater than the total supply
+                const address0 = '0x0000000000000000000000000000000000000000'
+                await token.transferFrom(deployer,address0, invalidAmount, {from : exchange}).should.be.rejected;
+   
+            })
+        })
+       
+        
+    })
+
+   
 })
