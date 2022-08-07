@@ -22,6 +22,8 @@ function token(state = {}, action) {
 
 function exchange(state = {}, action) {
     switch (action.type) {
+      case 'EXCHANGE_SIGNER':
+        return { ...state, loaded : true, contractSigner: action.contractSigner}
       case 'EXCHANGE_LOADED':
         return { ...state, loaded : true, contract: action.contract }
       case 'CANCEL_ORDERS_lOADED' :
@@ -30,9 +32,21 @@ function exchange(state = {}, action) {
         return { ...state, filledOrders : {loaded : true, data : action.filledOrders} }
       case 'ALL_ORDERS_lOADED' :
         return { ...state, allOrders : {loaded : true, data : action.allOrders} }
-      
-      
-        default:
+      case 'ORDER_CANCELLING' :
+          return { ...state, orderCancelling : true, }
+      case 'ORDER_CANCELLED':
+          return {
+              ...state,
+              orderCancelling: false,
+              cancelledOrders: {
+                ...state.cancelledOrders,
+                data: [
+                  ...state.cancelledOrders.data,
+                  action.order
+                ]
+              }
+            }
+      default:
         return state
     }
 }

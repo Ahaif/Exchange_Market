@@ -52,67 +52,81 @@ module.exports = async function(callBack){
         ///////////////////////////////////////////////////////
         /////Seed a Cancel Order
         
-        // user1 make order to get tokens
-        let result
-        let orderId
-        
-        result = await exchange.makeOrder(token.address, tokens(100),ETHER_ADDR, tokens(0.1), {from : user1})
-        console.log('make order from user1')
-       
+    // User 1 makes order to get tokens
+    let result
+    let orderId
+    result = await exchange.makeOrder(token.address, tokens(100), ETHER_ADDR, tokens(0.1), { from: user1 })
+    console.log(`Made order from ${user1}`)
 
-      
-        orderId = result.logs[0].args.id
-        await exchange.cancelOrder(orderId, {from: user1})
-        console.log('Cancelled from user1')
+    // User 1 cancells order
+    orderId = result.logs[0].args.id
+    await exchange.cancelOrder(orderId, { from: user1 })
+    console.log(`Cancelled order from ${user1}`)
 
-        ////////////////////////////////////////////////////////////
-        ////// SEED filled orders ////////////////
+    /////////////////////////////////////////////////////////////
+    // Seed Filled Orders
+    //
 
-        //user1 make the order
-        result = await exchange.makeOrder(token.address, tokens(100), ETHER_ADDR, tokens(0.1),{from : user1} )
-        //made order from user1
+    // User 1 makes order
+    result = await exchange.makeOrder(token.address, tokens(100), ETHER_ADDR, tokens(0.1), { from: user1 })
+    console.log(`Made order from ${user1}`)
 
-        //user2 fill order
-        orderId = result.logs[0].args.id
-        await exchange.fillOrder(orderId,{from : user2})
-        console.log('Order filled from user1')
-      
+    // User 2 fills order
+    orderId = result.logs[0].args.id
+    await exchange.fillOrder(orderId, { from: user2 })
+    console.log(`Filled order from ${user1}`)
 
-        await wait(1)
+    // Wait 1 second
+    await wait(1)
 
-        //user1 make final order
-        result = await exchange.makeOrder(token.address, tokens(200), ETHER_ADDR, tokens(0.15),{from : user1} )
-        console.log('final order made from user1')
+    // User 1 makes another order
+    result = await exchange.makeOrder(token.address, tokens(50), ETHER_ADDR, tokens(0.01), { from: user1 })
+    console.log(`Made order from ${user1}`)
 
-        //user2 fills final order
-        orderId = result.logs[0].args.id
-        await exchange.fillOrder(orderId,{from : user2})
-        console.log('final filled order from user1')
+    // User 2 fills another order
+    orderId = result.logs[0].args.id
+    await exchange.fillOrder(orderId, { from: user2 })
+    console.log(`Filled order from ${user1}`)
 
-        await wait(1)
-        //////////////////////////////////////////////////////////////////////
-        /////// SEED Open Oders
+    // Wait 1 second
+    await wait(1)
 
-         // user1 make 10 orders
-         for(let i =1; i<= 10; i++)
-         {
-             result = await exchange.makeOrder(token.address, tokens(10 * i), ETHER_ADDR, tokens(0.01),{from : user1})
-             console.log('Made order from user1')
- 
-             await wait(1)
-         }
+    // User 1 makes final order
+    result = await exchange.makeOrder(token.address, tokens(200), ETHER_ADDR, tokens(0.15), { from: user1 })
+    console.log(`Made order from ${user1}`)
 
-        // user2 make 10 orders
-        for(let i =1; i<= 10; i++)
-        {
-            result = await exchange.makeOrder(ETHER_ADDR, tokens(0.01), token.address, tokens(10 * i), {from : user2})
-            console.log('Made order from user2')
+    // User 2 fills final order
+    orderId = result.logs[0].args.id
+    await exchange.fillOrder(orderId, { from: user2 })
+    console.log(`Filled order from ${user1}`)
 
-            await wait(1)
-        }
+    // Wait 1 second
+    await wait(1)
+
+    /////////////////////////////////////////////////////////////
+    // Seed Open Orders
+    //
+
+    // User 1 makes 10 orders
+    for (let i = 1; i <= 10; i++) {
+      result = await exchange.makeOrder(token.address, tokens(10 * i), ETHER_ADDR, tokens(0.01), { from: user1 })
+      console.log(`Made order from ${user1}`)
+      // Wait 1 second
+      await wait(1)
     }
-    catch(error){
-        console.log(error)
+
+    // User 2 makes 10 orders
+    for (let i = 1; i <= 10; i++) {
+      result = await exchange.makeOrder(ETHER_ADDR, tokens(0.01), token.address, tokens(10 * i), { from: user2 })
+      console.log(`Made order from ${user2}`)
+      // Wait 1 second
+      await wait(1)
     }
-    callBack()
+
+  }
+  catch(error) {
+    console.log(error)
+  }
+
+  callBack()
 }

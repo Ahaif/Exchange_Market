@@ -20,6 +20,13 @@ export function exchangeLoaded(contract) {
       contract
     }
 }
+//EXCHANGE SIGNER
+export function exchangeSignerLoaded(contractSigner) {
+  return {
+    type: 'EXCHANGE_SIGNER',
+    contractSigner
+  }
+}
 //TOKEN
 export function tokenLoaded(contract) {
     return {
@@ -48,4 +55,19 @@ export function allOrdersLoaded(allOrders) {
       type: 'ALL_ORDERS_lOADED',
       allOrders : allOrders
     }
+}
+
+export function orderCancelling() {
+  return {
+    type: 'ORDER_CANCELLING',
+  
+  }
+}
+
+export function orderCancelled(order) {
+  return {
+    type: 'ORDER_CANCELLED',
+    order: order
+  
+  }
 }

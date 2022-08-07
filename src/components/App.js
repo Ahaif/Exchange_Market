@@ -8,7 +8,8 @@ import {
   loadWeb3,
   loadAccount,
   load_Token,
-  load_Exchange
+  load_Exchange,
+  load_ExchangeSigner
 } from '../store/interactions';
 import Navbar from './Navbar'
 import Content from './Content'
@@ -28,6 +29,7 @@ class App extends Component {
     const provider = loadWeb3(dispatch)
     const networkID = await(await provider.getNetwork()).chainId
     await loadAccount(provider, dispatch)
+    
     const token = await load_Token(provider, networkID, dispatch)
     if(!token)
     {
@@ -40,6 +42,7 @@ class App extends Component {
       window.alert('Token Smart Contract is not Deployed to the current network')
       return 
     }
+    await load_ExchangeSigner(provider, networkID, dispatch)
 
   }
     

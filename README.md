@@ -20,3 +20,15 @@ Do Trades - charge fess
 // [ ] Cancel order
 // [ ] Fill order
 // [ ] Charge fees
+
+
+test project
+be sure you have truffle and ganache insalled 
+
+
+npm install 
+run ganache and import the first account in Ganache to your metamask  
+truffle migrate --reset 
+truffle exec sricpts/seed_exchange.js
+npm start 
+once browser loaded connect metamask account

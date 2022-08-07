@@ -9,6 +9,9 @@ import {
     cancelOrdersLoaded,
     filledOrdersLoaded,
     allOrdersLoaded,
+    orderCancelling,
+    exchangeSignerLoaded,
+    orderCancelled
 } from "./actions"
 
 import { ethers } from "ethers"
@@ -48,6 +51,18 @@ export  const load_Exchange = async (connectionProvider,networkID, dispatch) =>{
     }
 }   
 
+export  const load_ExchangeSigner = async (connectionProvider,networkID, dispatch) =>{
+    try{
+        const signer = await connectionProvider.getSigner()
+        const contractSigner = await new ethers.Contract( Exchange.networks[networkID].address, Exchange.abi, signer)
+        dispatch(exchangeSignerLoaded(contractSigner))
+        return contractSigner
+    }catch(error){
+        console.log('Contract Signer is not fetched')
+        return null
+    }
+}   
+
 
 export const loadAllOrders = async(exchange, dispatch)=>{
     // fetch canceled oders with  Cancel event stream
@@ -55,6 +70,7 @@ export const loadAllOrders = async(exchange, dispatch)=>{
    // format cancelled orders 
    const cancelledOrders = cancelStream.map((event) => event.args)
     dispatch(cancelOrdersLoaded(cancelledOrders))
+    console.log(cancelledOrders)
     // fetch filled oders with Trade event stream
     const tradeStream = await exchange.queryFilter('Trade', 0, 'latest')
     const filledOrders = tradeStream.map((event) => event.args)
@@ -66,3 +82,33 @@ export const loadAllOrders = async(exchange, dispatch)=>{
     dispatch(allOrdersLoaded(allOrders))
     
 }
+
+export const cancelOrder = async (dispatch, exchangeSigner, order, account, exchange) => {
+    await exchangeSigner.cancelOrder(order.id ,{ from : account})
+
+}
+
+
+export const subscribeToEvent = async(exchange, dispatch)=>{
+    exchange.on('Cancel', async (...event) => {
+        dispatch(orderCancelling())
+        delete event[0]
+        // console.log(event);
+        const parseEvent = []
+        for(let i = 1; i < event.length; i++)
+        {
+            const j = 0
+            parseEvent[j] =  event[i]
+        }
+        let extractedValue = parseEvent.map(item => item.args)
+        let order
+        [order] = extractedValue
+        // console.log(order)
+        dispatch(orderCancelled(order))
+      });
+}
+
+
+
+  
+  
