@@ -1,18 +1,42 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Spinner from './Spinner'
 import {
   orderBookSelector,
-  orderBookLoadedSelector
+  orderBookLoadedSelector,
+  exchangSelector,
+  accountSelector,
+ exchangeSignerSelector,
+ orderFillingSelector,
 } from '../store/selectors'
 
-const renderOrder = (order) => {
+import { fillOrder } from '../store/interactions'
+
+
+const renderOrder = (order, props) => {
+  const {dispatch, exchangeSigner, account, exchange} = props
   return(
-    <tr key={order.id}>
+
+    <OverlayTrigger
+    key={order.id}
+    placement='auto'
+    overlay={
+      <Tooltip key={order.id}>
+        {`Click here to ${order.orderFillAction}`}
+      </Tooltip>
+    }
+    >
+    <tr
+     key={order.id}
+     className="order-book-order"
+     onClick={(e) =>fillOrder(dispatch, exchangeSigner, order, account, exchange)}
+    >
       <td>{order.tokenAmount}</td>
       <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
       <td>{order.etherAmount}</td>
     </tr>
+    </OverlayTrigger>
   )
 }
 
@@ -21,13 +45,13 @@ const showOrderBook = (props) => {
 
   return(
     <tbody>
-      {orderBook.sellOrders.map((order) => renderOrder(order))}
+      {orderBook.sellOrders.map((order) => renderOrder(order, props))}
       <tr>
         <th>HAI</th>
         <th>HAI/ETH</th>
         <th>ETH</th>
       </tr>
-      {orderBook.buyOrders.map((order) => renderOrder(order))}
+      {orderBook.buyOrders.map((order) => renderOrder(order, props))}
     </tbody>
   )
 }
@@ -53,9 +77,16 @@ class OrderBook extends Component {
 
 function mapStateToProps(state) {
 
+  const orderBookLoaded = orderBookLoadedSelector(state)
+  const orderFilling = orderFillingSelector(state)
+
+
   return {
     orderBook: orderBookSelector(state),
-    showOrderBook: orderBookLoadedSelector(state)
+    showOrderBook: orderBookLoaded && !orderFilling,
+    exchange : exchangSelector(state),
+    account : accountSelector(state),
+    exchangeSigner : exchangeSignerSelector(state)
   }
 }
 

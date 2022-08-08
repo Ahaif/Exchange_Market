@@ -11,10 +11,13 @@ import {
     allOrdersLoaded,
     orderCancelling,
     exchangeSignerLoaded,
-    orderCancelled
+    orderCancelled,
+    orderFilling,
+    orderFilled
 } from "./actions"
 
 import { ethers } from "ethers"
+import { parseEvent } from './helpersStore'
 
 export  const loadWeb3 = (dispatch) =>{
     const connectionProvider = new ethers.providers.Web3Provider(window.ethereum)
@@ -85,6 +88,7 @@ export const loadAllOrders = async(exchange, dispatch)=>{
 
 export const cancelOrder = async (dispatch, exchangeSigner, order, account, exchange) => {
     await exchangeSigner.cancelOrder(order.id ,{ from : account})
+    // listen for tx hash and dispatch cancelling 
 
 }
 
@@ -92,23 +96,25 @@ export const cancelOrder = async (dispatch, exchangeSigner, order, account, exch
 export const subscribeToEvent = async(exchange, dispatch)=>{
     exchange.on('Cancel', async (...event) => {
         dispatch(orderCancelling())
-        delete event[0]
-        // console.log(event);
-        const parseEvent = []
-        for(let i = 1; i < event.length; i++)
-        {
-            const j = 0
-            parseEvent[j] =  event[i]
-        }
-        let extractedValue = parseEvent.map(item => item.args)
-        let order
-        [order] = extractedValue
+        const order = parseEvent(event)
         // console.log(order)
         dispatch(orderCancelled(order))
       });
+
+      exchange.on('Trade', async (...event) => {
+        dispatch(orderFilling())
+        const order = parseEvent(event)
+        // console.log(order)
+        dispatch(orderFilled(order))
+      })
+
 }
 
+export const fillOrder = async (dispatch, exchangeSigner, order, account, exchange) => {
+    await exchangeSigner.fillOrder(order.id ,{ from : account})
+    // listen for tx hash and dispatch filling 
 
+}
 
   
   
