@@ -30,5 +30,7 @@ npm install
 run ganache and import the first account in Ganache to your metamask  
 truffle migrate --reset 
 truffle exec sricpts/seed_exchange.js
+(seed exchange markets with some orders in order to make things simple in first test before we create 'createOrder Action')
+
 npm start 
 once browser loaded connect metamask account

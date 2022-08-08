@@ -1,0 +1,164 @@
+import React, { Component } from "react";
+import { connect} from "react-redux";
+import { 
+    loadBalances,
+    depositEther
+ } from "../store/interactions";
+import { Tabs, Tab } from 'react-bootstrap'
+import Spinner from "./Spinner";
+import {
+    exchangSelector,
+    exchangeSignerSelector,
+    tokenContractSelector,
+    accountSelector,
+    web3ProviderSelector,
+    balancesLoadingSelector,
+    etherBalanceSelector,
+    tokenBalanceSelector,
+    exchangeEtherBalanceSelector,
+    exchangeTokenBalanceSelector,
+    etherDepositAmountSelector
+
+  } from '../store/selectors'
+  import { etherDepositAmountChanged } from "../store/actions";
+
+  const showForm = (props) => {
+    const {
+        etherBalance,
+        tokenBalance,
+        exchangeEtherBalance,
+        exchangeTokenBalance,
+        dispatch,
+        etherDepositAmount,
+        provider,
+        exchange,
+        account,
+        exchangeSigner
+    } = props
+    return(
+    <Tabs defaultActiveKey="deposit" className="bg-dark text-white">
+      <Tab eventKey="deposit" title="Deposit" className = "bg-dark">
+      <table className="table table-dark table-sm small">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Wallet</th>
+              <th>Exchange</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ETH</td>
+              <td>{etherBalance}</td>
+              <td>{exchangeEtherBalance}</td>
+            </tr>
+          </tbody>
+        </table>
+        <table className="table table-dark table-sm small">
+          <tbody>
+            <tr>
+              <td>HAI</td>
+              <td>{tokenBalance}</td>
+              <td>{exchangeTokenBalance}</td>
+            </tr>
+          </tbody>
+        </table>
+        <form className="row" onSubmit={(event) => {
+          event.preventDefault()
+          console.log('form submitting...')
+          depositEther(dispatch, exchangeSigner, provider, etherDepositAmount , account)
+        }}>
+          <div className="col-12 col-sm pr-sm-2">
+            <input
+            type="text"
+            placeholder="ETH Amount"
+            onChange={(e) => dispatch(etherDepositAmountChanged(e.target.value) ) }
+            className="form-control form-control-sm bg-dark text-white"
+            required />
+          </div>
+          <div className="col-12 col-sm-auto pl-sm-0">
+            <button type="submit" className="btn btn-primary btn-block btn-sm">Deposit</button>
+          </div>
+        </form>
+        
+      </Tab>
+     
+      <Tab eventKey="withdraw" title="Withdraw" className = "bg-dark">
+        <table className="table table-dark table-sm small">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Wallet</th>
+              <th>Exchange</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ETH</td>
+              <td>{etherBalance}</td>
+              <td>{exchangeEtherBalance}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+        <table className="table table-dark table-sm small">
+          <tbody>
+            <tr>
+              <td>HAI</td>
+              <td>{tokenBalance}</td>
+              <td>{exchangeTokenBalance}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Tab>
+    </Tabs>
+    )
+  }
+
+class Balance extends Component{
+
+    componentWillMount(){
+        this.loadBlockchainData()
+    
+      }
+      async loadBlockchainData(){
+        const {dispatch, provider, exchange, token, account} = this.props
+        await loadBalances(dispatch, provider, exchange, token, account)
+      }
+    render(){
+        return(
+            <div className="card bg-dark text-white">
+            <div className="card-header">
+              Card Title
+            </div>
+            <div className="card-body">
+                {this.props.showForm ? showForm(this.props) : <Spinner />}
+            </div>
+          </div>
+
+        )
+    }
+}
+
+function mapStateToProps(state){
+    const balancesLoading = balancesLoadingSelector(state)
+    return{
+        provider: web3ProviderSelector(state),
+        exchange: exchangSelector(state),
+        token: tokenContractSelector(state),
+        account: accountSelector(state),
+        etherBalance: etherBalanceSelector(state),
+        tokenBalance: tokenBalanceSelector(state),
+        exchangeEtherBalance: exchangeEtherBalanceSelector(state),
+        exchangeTokenBalance: exchangeTokenBalanceSelector(state),
+        balancesLoading,
+        showForm: !balancesLoading,
+        etherDepositAmount : etherDepositAmountSelector(state),
+        exchangeSigner : exchangeSignerSelector(state)
+        
+    }
+}
+
+
+export default connect(mapStateToProps)(Balance)

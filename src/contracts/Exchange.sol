@@ -70,7 +70,9 @@ contract Exchange{
     }
 
     function depositEther()public payable{
-        tokensMap[ETHER][msg.sender] = tokensMap[ETHER][msg.sender] + msg.value;
+        unchecked {
+            tokensMap[ETHER][msg.sender] = tokensMap[ETHER][msg.sender] + msg.value;
+        }
          emit Deposit(ETHER, msg.sender, msg.value,tokensMap[ETHER][msg.sender]);
 
     }
