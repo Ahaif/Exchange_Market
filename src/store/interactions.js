@@ -19,11 +19,14 @@ import {
     exchangeEtherBalanceLoaded,
     exchangeTokenBalanceLoaded,
     balancesLoaded,
-    balancesLoading
+    balancesLoading,
+    tokenSignerLoaded
 } from "./actions"
 
 import { ethers } from "ethers"
 import { parseEvent, ETHER_ADDR, tokens} from './helpersStore'
+import { exchangeTokenBalanceSelector } from './selectors'
+
 
 
 export  const loadWeb3 = (dispatch) =>{
@@ -73,6 +76,18 @@ export  const load_ExchangeSigner = async (connectionProvider,networkID, dispatc
     }
 }   
 
+export  const load_TokenSigner = async (connectionProvider,networkID, dispatch) =>{
+    try{
+        const signer = await connectionProvider.getSigner()
+        const contractSigner = await new ethers.Contract( Token.networks[networkID].address, Token.abi, signer)
+        dispatch(tokenSignerLoaded(contractSigner))
+        console.log(contractSigner)
+        return contractSigner
+    }catch(error){
+        console.log('Contract Signer is not fetched')
+        return null
+    }
+}   
 
 export const loadAllOrders = async(exchange, dispatch)=>{
     // fetch canceled oders with  Cancel event stream
@@ -80,7 +95,6 @@ export const loadAllOrders = async(exchange, dispatch)=>{
    // format cancelled orders 
    const cancelledOrders = cancelStream.map((event) => event.args)
     dispatch(cancelOrdersLoaded(cancelledOrders))
-    console.log(cancelledOrders)
     // fetch filled oders with Trade event stream
     const tradeStream = await exchange.queryFilter('Trade', 0, 'latest')
     const filledOrders = tradeStream.map((event) => event.args)
@@ -94,38 +108,19 @@ export const loadAllOrders = async(exchange, dispatch)=>{
 }
 
 export const cancelOrder = async (dispatch, exchangeSigner, order, account, exchange) => {
-    await exchangeSigner.cancelOrder(order.id ,{ from : account})
+    exchangeSigner.cancelOrder(order.id ,{ from : account})
+    .then((hash) =>{
+        dispatch(orderCancelling())
+    })
     // listen for tx hash and dispatch cancelling 
 
 }
 
-
-export const subscribeToEvent = async(exchange, dispatch)=>{
-    exchange.on('Cancel', async (...event) => {
-        dispatch(orderCancelling())
-        const order = parseEvent(event)
-        // console.log(order)
-        dispatch(orderCancelled(order))
-      });
-
-      exchange.on('Trade', async (...event) => {
-        dispatch(orderFilling())
-        const order = parseEvent(event)
-        // console.log(order)
-        dispatch(orderFilled(order))
-      })
-
-    exchange.on('Deposit', async (...event) => {
-        await dispatch(balancesLoading())
-        // const order = parseEvent(event)
-        console.log("even emitted")
-        dispatch(balancesLoaded())
-      })
-
-}
-
 export const fillOrder = async (dispatch, exchangeSigner, order, account, exchange) => {
-    await exchangeSigner.fillOrder(order.id ,{ from : account})
+    exchangeSigner.fillOrder(order.id ,{ from : account})
+    .then((hash) =>{
+        dispatch(orderFilling())
+    })
     // listen for tx hash and dispatch filling 
 
 }
@@ -134,22 +129,16 @@ export const loadBalances = async (dispatch, provider, exchange, token, account)
     if(typeof account !== 'undefined') {
         // Ether balance in wallet
         const etherBalance = await provider.getBalance(account)
-        dispatch(etherBalanceLoaded(etherBalance))
-  
+        dispatch(etherBalanceLoaded(etherBalance.toString()))
         // Token balance in wallet
-        const tokenBalance = await token.balanceOf(account)
+        const tokenBalance = await token._balances(account)
         dispatch(tokenBalanceLoaded(tokenBalance))
-  
         // Ether balance in exchange
         const exchangeEtherBalance = await exchange.balanceOf(ETHER_ADDR, account)
-        dispatch(exchangeEtherBalanceLoaded(exchangeEtherBalance))
-  
+        dispatch(exchangeEtherBalanceLoaded(exchangeEtherBalance.toString()))
         // Token balance in exchange
-        
         const exchangeTokenBalance = await exchange.balanceOf(token.address, account)
-        console.log(exchangeTokenBalance.toString())
         dispatch(exchangeTokenBalanceLoaded(exchangeTokenBalance.toString()))
-  
         // Trigger all balances loaded
         dispatch(balancesLoaded())
       } else {
@@ -159,10 +148,62 @@ export const loadBalances = async (dispatch, provider, exchange, token, account)
 
 export const depositEther = async (dispatch, exchangeSigner, provider, value, account)=>{
     const val = ethers.utils.parseEther(value.toString())
-    console.log(val)
     await exchangeSigner.depositEther({from : account, value : val})
+    // listen for event and call dipatch 
+   
+    
+}
+
+
+export const depositToken = async (dispatch, exchangeSigner, value, account, token)=>{
+    const val = ethers.utils.parseEther(value.toString())
+    console.log(account)
+    console.log(exchangeSigner.address)
+    token.approve(account, exchangeSigner.address, val)
+    .then(async (log)=>{
+      await exchangeSigner.depositToken(token.address, val)
+    })
 
 }
 
-  
-  
+export const withdrawEther = async (dispatch, exchangeSigner, provider, value, account)=>{
+    const vali = ethers.utils.parseUnits(value, 18).toString()
+    // console.log(vali)
+    await exchangeSigner.withdrawEther(vali, {from : account})
+     // listen for event and call dispatch balances loading 
+}
+
+export const withdrawToken = async (dispatch, exchangeSigner, value, token)=>{
+    console.log(value)
+    const vali = ethers.utils.parseUnits(value, 18)
+    
+    // const vali = tokens(value)
+    console.log(vali)
+    console.log(token.address)
+    await exchangeSigner.withdraToken(token.address, vali)
+    // .then(async (hash) =>{
+    //    const ret = await dispatch(balancesLoading())
+    //    await ret.wait
+    // })
+    //to add listen for  tx hash signing 
+}
+
+export const subscribeToEvent = async(exchange, dispatch)=>{
+    exchange.on('Cancel', async (...event) => {
+        const order = parseEvent(event)
+        dispatch(orderCancelled(order))
+      });
+      exchange.on('Trade', async (...event) => {
+        const order = parseEvent(event)
+        // console.log(order)
+        dispatch(orderFilled(order))
+      })
+      exchange.on('Deposit', async (...event) => {
+        dispatch(balancesLoaded())
+        dispatch(balancesLoading())
+      })
+      exchange.on('Withdraw', async (...event) => {
+        await dispatch(balancesLoading())
+        dispatch(balancesLoaded())
+      })
+}

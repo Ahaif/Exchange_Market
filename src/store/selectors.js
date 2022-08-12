@@ -23,6 +23,9 @@ export  const tokenSelector = createSelector(tokenLoaded, tl => tl)
 const token = state =>get(state, 'token.contract')
 export  const tokenContractSelector = createSelector(token, e => e)
 
+const tokenSigner = state =>get(state, 'token.contractSigner')
+export  const tokenSignerSelector = createSelector(tokenSigner, e => e)
+
 const exchangeLoaded = state =>get(state, 'exchange.loaded', false)
 export  const exchangeSelector = createSelector(exchangeLoaded, el => el)
 
@@ -375,7 +378,17 @@ export const exchangeTokenBalanceSelector = createSelector(
     return formatBalance(balance)
   }
 )
-
-
+// ether deposit.withdraw selectors
 const etherDepositAmount = state => get(state, 'exchange.etherDepositAmount', null)
 export const etherDepositAmountSelector = createSelector(etherDepositAmount, amount => amount)
+
+const etherWithdrawAmount = state => get(state, 'exchange.etherWithdrawAmount', null)
+export const etherWithdrawAmountSelector = createSelector(etherWithdrawAmount, amount => amount)
+
+//token deposit.withdraw  selectors 
+const tokenDepositAmount = state => get(state, 'exchange.tokenDepositAmount', null)
+export const tokenDepositAmountSelector = createSelector(tokenDepositAmount, amount => amount)
+
+const tokenWithdrawAmount = state => get(state, 'exchange.tokenWithdrawAmount', null)
+export const tokenWithdrawAmountSelector = createSelector(tokenWithdrawAmount, amount => amount)
+

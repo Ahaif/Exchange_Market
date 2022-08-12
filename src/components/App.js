@@ -9,7 +9,8 @@ import {
   loadAccount,
   load_Token,
   load_Exchange,
-  load_ExchangeSigner
+  load_ExchangeSigner,
+  load_TokenSigner
 } from '../store/interactions';
 import Navbar from './Navbar'
 import Content from './Content'
@@ -19,8 +20,8 @@ import { connect } from 'react-redux';
 
 class App extends Component { 
 
- componentWillMount(){
-    this.loadBlockchainData(this.props.dispatch)
+ componentDidMount(){
+  this.loadBlockchainData(this.props.dispatch)
 
   }
   async loadBlockchainData(dispatch)
@@ -43,6 +44,7 @@ class App extends Component {
       return 
     }
     await load_ExchangeSigner(provider, networkID, dispatch)
+    await load_TokenSigner(provider, networkID, dispatch)
 
   }
     

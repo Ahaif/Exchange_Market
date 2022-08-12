@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { connect} from "react-redux";
 import { 
     loadBalances,
-    depositEther
+    depositEther,
+    withdrawEther,
+    depositToken,
+    withdrawToken
  } from "../store/interactions";
 import { Tabs, Tab } from 'react-bootstrap'
 import Spinner from "./Spinner";
@@ -17,10 +20,19 @@ import {
     tokenBalanceSelector,
     exchangeEtherBalanceSelector,
     exchangeTokenBalanceSelector,
-    etherDepositAmountSelector
+    etherDepositAmountSelector,
+    etherWithdrawAmountSelector,
+    tokenDepositAmountSelector,
+    tokenWithdrawAmountSelector,
+    tokenSignerSelector
 
   } from '../store/selectors'
-  import { etherDepositAmountChanged } from "../store/actions";
+  import { etherDepositAmountChanged,
+    etherWithdrawAmountChanged,
+    tokenDepositAmountChanged,
+    tokenWithdrawAmountChanged,
+
+  } from "../store/actions";
 
   const showForm = (props) => {
     const {
@@ -29,16 +41,20 @@ import {
         exchangeEtherBalance,
         exchangeTokenBalance,
         dispatch,
-        etherDepositAmount,
         provider,
-        exchange,
         account,
-        exchangeSigner
+        exchangeSigner,
+        etherDepositAmount,
+        etherWithdrawAmount,
+        tokenDepositAmount,
+        tokenWithdrawAmount,
+        tokenSigner
+
     } = props
     return(
     <Tabs defaultActiveKey="deposit" className="bg-dark text-white">
       <Tab eventKey="deposit" title="Deposit" className = "bg-dark">
-      <table className="table table-dark table-sm small">
+        <table className="table table-dark table-sm small">
           <thead>
             <tr>
               <th>Token</th>
@@ -54,15 +70,7 @@ import {
             </tr>
           </tbody>
         </table>
-        <table className="table table-dark table-sm small">
-          <tbody>
-            <tr>
-              <td>HAI</td>
-              <td>{tokenBalance}</td>
-              <td>{exchangeTokenBalance}</td>
-            </tr>
-          </tbody>
-        </table>
+      
         <form className="row" onSubmit={(event) => {
           event.preventDefault()
           console.log('form submitting...')
@@ -80,7 +88,34 @@ import {
             <button type="submit" className="btn btn-primary btn-block btn-sm">Deposit</button>
           </div>
         </form>
-        
+        <table className="table table-dark table-sm small">
+          <tbody>
+            <tr>
+              <td>HAI</td>
+              <td>{tokenBalance}</td>
+              <td>{exchangeTokenBalance}</td>
+            </tr>
+          </tbody>
+        </table>
+        <form className="row" onSubmit={(event) => {
+          event.preventDefault()
+          console.log('form submitting...')
+          console.log(tokenSigner)
+          depositToken(dispatch, exchangeSigner, tokenDepositAmount, account, tokenSigner)
+        }}>
+          <div className="col-12 col-sm pr-sm-2">
+            <input
+            type="text"
+            placeholder="TOKEN Amount"
+            onChange={(e) => dispatch(tokenDepositAmountChanged(e.target.value) ) }
+            className="form-control form-control-sm bg-dark text-white"
+            required />
+          </div>
+          <div className="col-12 col-sm-auto pl-sm-0">
+            <button type="submit" className="btn btn-primary btn-block btn-sm">Deposit</button>
+          </div>
+        </form>
+
       </Tab>
      
       <Tab eventKey="withdraw" title="Withdraw" className = "bg-dark">
@@ -100,8 +135,23 @@ import {
             </tr>
           </tbody>
         </table>
-
-
+  
+        <form className="row" onSubmit={(event) => {
+          event.preventDefault()
+            withdrawEther(dispatch, exchangeSigner, provider, etherWithdrawAmount, account)
+              }}>
+          <div className="col-12 col-sm pr-sm-2">
+            <input
+            type="text"
+            placeholder="ETH Amount"
+            onChange={(e) => dispatch(etherWithdrawAmountChanged(e.target.value) )}
+            className="form-control form-control-sm bg-dark text-white"
+            required />
+          </div>
+          <div className="col-12 col-sm-auto pl-sm-0">
+            <button type="submit" className="btn btn-primary btn-block btn-sm">Withdraw</button>
+          </div>
+        </form>
         <table className="table table-dark table-sm small">
           <tbody>
             <tr>
@@ -111,24 +161,39 @@ import {
             </tr>
           </tbody>
         </table>
+        <form className="row" onSubmit={(event) => {
+          event.preventDefault()
+              withdrawToken(dispatch, exchangeSigner, tokenWithdrawAmount, tokenSigner)
+              }}>
+          <div className="col-12 col-sm pr-sm-2">
+            <input
+            type="text"
+            placeholder="TOKEN Amount"
+            onChange={(e) => dispatch( tokenWithdrawAmountChanged(e.target.value) )}
+            className="form-control form-control-sm bg-dark text-white"
+            required />
+          </div>
+          <div className="col-12 col-sm-auto pl-sm-0">
+            <button type="submit" className="btn btn-primary btn-block btn-sm">Withdraw</button>
+          </div>
+        </form>
       </Tab>
     </Tabs>
     )
   }
 
 class Balance extends Component{
-
-    componentWillMount(){
+ 
+    componentDidUpdate(){
         this.loadBlockchainData()
-    
       }
-      async loadBlockchainData(){
+    async loadBlockchainData(){
         const {dispatch, provider, exchange, token, account} = this.props
         await loadBalances(dispatch, provider, exchange, token, account)
       }
     render(){
         return(
-            <div className="card bg-dark text-white">
+          <div className="card bg-dark text-white">
             <div className="card-header">
               Card Title
             </div>
@@ -136,7 +201,6 @@ class Balance extends Component{
                 {this.props.showForm ? showForm(this.props) : <Spinner />}
             </div>
           </div>
-
         )
     }
 }
@@ -154,9 +218,13 @@ function mapStateToProps(state){
         exchangeTokenBalance: exchangeTokenBalanceSelector(state),
         balancesLoading,
         showForm: !balancesLoading,
-        etherDepositAmount : etherDepositAmountSelector(state),
-        exchangeSigner : exchangeSignerSelector(state)
         
+        exchangeSigner : exchangeSignerSelector(state),
+        etherWithdrawAmount: etherWithdrawAmountSelector(state),
+        etherDepositAmount : etherDepositAmountSelector(state),
+        tokenDepositAmount:  tokenDepositAmountSelector(state),
+        tokenWithdrawAmount : tokenWithdrawAmountSelector(state),
+        tokenSigner : tokenSignerSelector(state)
     }
 }
 

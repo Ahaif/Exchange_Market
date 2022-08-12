@@ -141,9 +141,10 @@ contract Exchange{
         // charge fess 
         //mark the order as filled 
         //emit trade event 
+        // require(tokensMap[_tokenGet][msg.sender] >= _amountGet);
+        // require(tokensMap[_tokenGive][msg.sender] >= _amountGive);
         unchecked {
             uint256 feeAmount = (_amountGive * feePercent) / 100;
-
             // user is the person creating order, msg.sender is the one who fill order
             tokensMap[_tokenGet][msg.sender] = tokensMap[_tokenGet][msg.sender] - (_amountGet + feeAmount);
             tokensMap[_tokenGet][_user] = tokensMap[_tokenGet][_user] + _amountGet;

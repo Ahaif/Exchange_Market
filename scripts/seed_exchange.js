@@ -39,7 +39,7 @@ module.exports = async function(callBack){
         const user1 = accounts[0]
         const user2 = accounts[1]
         // user1 deposit ether
-        amount = 1
+        amount = 10
         await exchange.depositEther({from: user1, value : tokens(amount) })
         console.log('Deposit Ether from user1')
         // user2 deposit tokens

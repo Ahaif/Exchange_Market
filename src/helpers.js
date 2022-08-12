@@ -1,3 +1,4 @@
+
 export const ETHER_ADDR = "0x0000000000000000000000000000000000000000";
 export const GREEN = 'success'
 export const RED = 'danger'
@@ -19,4 +20,6 @@ export const formatBalance = (balance)=>{
   balance = ether(balance)
   balance = Math.round(balance * precision) / precision
   return balance
+
+  
 }
