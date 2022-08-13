@@ -184,7 +184,7 @@ import {
 
 class Balance extends Component{
  
-    componentDidUpdate(){
+    componentDidMount(){
         this.loadBlockchainData()
       }
     async loadBlockchainData(){

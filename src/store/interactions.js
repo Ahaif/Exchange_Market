@@ -20,7 +20,10 @@ import {
     exchangeTokenBalanceLoaded,
     balancesLoaded,
     balancesLoading,
-    tokenSignerLoaded
+    tokenSignerLoaded,
+    buyOrderMaking,
+    sellOrderMaking,
+    orderMade
 } from "./actions"
 
 import { ethers } from "ethers"
@@ -149,6 +152,7 @@ export const loadBalances = async (dispatch, provider, exchange, token, account)
 export const depositEther = async (dispatch, exchangeSigner, provider, value, account)=>{
     const val = ethers.utils.parseEther(value.toString())
     await exchangeSigner.depositEther({from : account, value : val})
+    .then
     // listen for event and call dipatch 
    
     
@@ -199,11 +203,55 @@ export const subscribeToEvent = async(exchange, dispatch)=>{
         dispatch(orderFilled(order))
       })
       exchange.on('Deposit', async (...event) => {
+        await dispatch(balancesLoading())
         dispatch(balancesLoaded())
-        dispatch(balancesLoading())
+      
       })
       exchange.on('Withdraw', async (...event) => {
         await dispatch(balancesLoading())
         dispatch(balancesLoaded())
       })
+
+      exchange.on('Order', async (...event) => {
+        const order = parseEvent(event)
+        // console.log(order)
+        // await dispatch(buyOrderMaking())
+        // await dispatch(sellOrderMaking())
+        dispatch(orderMade(order))
+      })
 }
+
+
+export const makeBuyOrder = async (dispatch, exchangeSigner, tokenSigner, provider, order, account) => {
+    const tokenGet = tokenSigner.address
+    const amountGet = ethers.utils.parseUnits(order.amount, 18)
+    const tokenGive = ETHER_ADDR
+    const amountGive = ethers.utils.parseUnits((order.amount * order.price).toString(), 18)
+    console.log(exchangeSigner)
+     exchangeSigner.makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+    .then(async (hash) => {
+      await dispatch(buyOrderMaking())
+    })
+    exchangeSigner.on('error',(error) => {
+      console.error(error)
+      window.alert(`There was an error!`)
+    })
+  }
+
+
+  export const makeSellOrder = async (dispatch, exchangeSigner, tokenSigner, provider, order, account) => {
+    const tokenGet = ETHER_ADDR 
+    const amountGet = ethers.utils.parseUnits((order.amount * order.price).toString(), 18)
+    const tokenGive = tokenSigner.address
+    const amountGive =  ethers.utils.parseUnits(order.amount, 18)
+   
+    exchangeSigner.makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+    .then(async (hash) => {
+      dispatch(sellOrderMaking())
+    })
+    exchangeSigner.on('error',(error) => {
+      console.error(error)
+      window.alert(`There was an error!`)
+    })
+  }
+  

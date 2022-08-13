@@ -28,7 +28,7 @@ const showPriceChart = (priceChart) => {
     </div>
   )
 }
-
+//priceChart.series
 class PriceChart extends Component {
   render() {
     return (
