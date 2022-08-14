@@ -92,7 +92,7 @@ const showForm = (props)=>{
           makeSellOrder(dispatch, exchangeSigner, tokenSigner, provider, sellOrder, account)
         }}>
         <div className="form-group small">
-          <label>Buy Sell (HAI)</label>
+          <label>Sell (HAI)</label>
           <div className="input-group">
             <input
               type="text"
@@ -126,14 +126,6 @@ const showForm = (props)=>{
 }
 
 class NewOrder extends Component{
-
-    // componentDidUpdate(){
-    //     this.loadBlockchainData()
-    //   }
-    // async loadBlockchainData(){
-    //     const {dispatch,exchangeSigner} = this.props
-    //     await loadAllOrders(exchangeSigner, dispatch)
-    //   }
     render(){
         return(
             <div className="card bg-dark text-white">

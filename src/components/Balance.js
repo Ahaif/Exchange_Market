@@ -169,7 +169,7 @@ import {
             <input
             type="text"
             placeholder="TOKEN Amount"
-            onChange={(e) => dispatch( tokenWithdrawAmountChanged(e.target.value) )}
+            onChange={(e) => dispatch(tokenWithdrawAmountChanged(e.target.value) )}
             className="form-control form-control-sm bg-dark text-white"
             required />
           </div>
