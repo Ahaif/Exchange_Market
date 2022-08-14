@@ -22,6 +22,8 @@ Do Trades - charge fess
 // [ ] Charge fees
 
 
+-------
+
 test project
 be sure you have truffle and ganache insalled 
 
