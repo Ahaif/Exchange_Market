@@ -45,7 +45,7 @@ class App extends Component {
     const exchange = await load_Exchange(provider, networkID, dispatch)
     if(!exchange)
     {
-      window.alert('Token Smart Contract is not Deployed to the current network')
+      window.alert('Exchange Smart Contract is not Deployed to the current network')
       return 
     }
     await load_ExchangeSigner(provider, networkID, dispatch)
