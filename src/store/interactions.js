@@ -39,11 +39,6 @@ export  const loadWeb3 = (dispatch) =>{
         return 
     }
     const connectionProvider = new ethers.providers.Web3Provider(window.ethereum)
-    // if(!connectionProvider)
-    // {
-    //   window.alert('Please Login With Metamask')
-    //   return 
-    // }
     dispatch(web3Loaded(connectionProvider))
     return connectionProvider
 }   
@@ -62,6 +57,7 @@ export  const load_Token = async (connectionProvider,networkID, dispatch) =>{
         return token
     }catch(error){
         console.log('Contract is not Deployed to the current network')
+        alert('Contract is not Deployed to the current network')
         return null
     }
 }   
