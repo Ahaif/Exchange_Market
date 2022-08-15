@@ -39,6 +39,11 @@ export  const loadWeb3 = (dispatch) =>{
         return 
     }
     const connectionProvider = new ethers.providers.Web3Provider(window.ethereum)
+    if(!connectionProvider)
+    {
+      window.alert('Please Login with metamask')
+      return 
+    }
     dispatch(web3Loaded(connectionProvider))
     return connectionProvider
 }   
@@ -90,7 +95,7 @@ export  const load_TokenSigner = async (connectionProvider,networkID, dispatch) 
         const signer = await connectionProvider.getSigner()
         const contractSigner = await new ethers.Contract( Token.networks[networkID].address, Token.abi, signer)
         dispatch(tokenSignerLoaded(contractSigner))
-        console.log(contractSigner)
+        // console.log(contractSigner)
         return contractSigner
     }catch(error){
         console.log('Contract Signer is not fetched')

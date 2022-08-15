@@ -27,15 +27,7 @@ class App extends Component {
   async loadBlockchainData(dispatch)
   {
 
-    const provider = loadWeb3(dispatch)
-    if(!provider)
-    {
-      window.alert('Please Login with metamask')
-      return 
-    }
-    const networkID = await(await provider.getNetwork()).chainId
-    await loadAccount(provider, dispatch)
-    
+    const provider = loadWeb3(dispatch)  
     const token = await load_Token(provider, networkID, dispatch)
     if(!token)
     {
@@ -50,6 +42,8 @@ class App extends Component {
     }
     await load_ExchangeSigner(provider, networkID, dispatch)
     await load_TokenSigner(provider, networkID, dispatch)
+    const networkID = await(await provider.getNetwork()).chainId
+    await loadAccount(provider, dispatch)
 
   }
     
