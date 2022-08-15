@@ -28,7 +28,11 @@ class App extends Component {
   {
 
     const provider = loadWeb3(dispatch)
-  
+    if(!provider)
+    {
+      window.alert('Please Login with metamask')
+      return 
+    }
     const networkID = await(await provider.getNetwork()).chainId
     await loadAccount(provider, dispatch)
     
