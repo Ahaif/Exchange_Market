@@ -34,6 +34,11 @@ import { exchangeTokenBalanceSelector } from './selectors'
 
 export  const loadWeb3 = (dispatch) =>{
     const connectionProvider = new ethers.providers.Web3Provider(window.ethereum)
+    if(!connectionProvider)
+    {
+      window.alert('Please Login With Metamask')
+      return 
+    }
     dispatch(web3Loaded(connectionProvider))
     return connectionProvider
 }   
