@@ -33,6 +33,11 @@ import { exchangeTokenBalanceSelector } from './selectors'
 
 
 export  const loadWeb3 = (dispatch) =>{
+    if(!window.ethereum)
+    {
+        window.alert('YOU SOULD INSTALL METAMSK AND IMPORT WALLET')
+        return 
+    }
     const connectionProvider = new ethers.providers.Web3Provider(window.ethereum)
     if(!connectionProvider)
     {
