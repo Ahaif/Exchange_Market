@@ -117,9 +117,12 @@ Front End:
 -> git clone App repo
 -> install project dependencies [npm start]
 -> Run ganache and set port to 8545
--> import first account of ganache to youe metamsk wallet (funds sourcing)
+-> import first account of ganache to your metamask wallet (funds sourcing)
 -> deploy smart contracts to Ganache network [truffle migrate --reset]
 --> seed exhchange with orders for data visualization [truffle exec scripts/seed_exchange.js]
 --> Run Project [npm start]
 
 Once browser loaded connect metamask to your browser and everything should be fine 
+
+if you use Heroku link make sure you run Ganache in Port 8545
+and deploy the contracts to Ganache using [truffle migrate --reset]
