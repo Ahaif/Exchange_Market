@@ -1,6 +1,11 @@
 
 require('dotenv').config();
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 
+
+
+// const PRIVATE_KEYS='e2acec3a4bf39ab7b011f8be1cdc2e1f94aa476dd37ee7972f1c71bb266a09f6,9536298e694d863d85d86e7b5fb7e2159daf340f669518460d70ab64ccdc9a23'
+// const INFURA_API_KEY= "https://kovan.infura.io/v3/1b21b86ebb1c4aee8048fb612a51126e"
 
 module.exports = {
 
@@ -10,8 +15,18 @@ module.exports = {
       port: 8545,
       network_id: "*"
     },
+    // kovan: {
+    //   provider: function() {
+    //     return new HDWalletProvider(
+    //       PRIVATE_KEYS.split(','), 
+    //      INFURA_API_KEY
+    //     )
+    //   },
+    //   gas: 5000000,
+    //   gasPrice: 25000000000,
+    //   network_id: 42
+    // }
   },
-
   contracts_directory : './src/contracts/',
   contracts_build_directory : './src/abis/',
 
@@ -19,8 +34,6 @@ module.exports = {
   compilers: {
     solc: {
       version: "0.8.13",      // Fetch exact version from solc-bin (default: truffle's version)
-      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      // settings: {          // See the solidity docs for advice about optimization and evmVersion
        optimizer: {
          enabled: false,
          runs: 200
@@ -29,25 +42,4 @@ module.exports = {
       // }
     }
   },
-
-  // Truffle DB is currently disabled by default; to enable it, change enabled:
-  // false to enabled: true. The default storage location can also be
-  // overridden by specifying the adapter settings, as shown in the commented code below.
-  //
-  // NOTE: It is not possible to migrate your contracts to truffle DB and you should
-  // make a backup of your artifacts to a safe location before enabling this feature.
-  //
-  // After you backed up your artifacts you can utilize db by running migrate as follows:
-  // $ truffle migrate --reset --compile-all
-  //
-  // db: {
-    // enabled: false,
-    // host: "127.0.0.1",
-    // adapter: {
-    //   name: "sqlite",
-    //   settings: {
-    //     directory: ".db"
-    //   }
-    // }
-  // }
 };

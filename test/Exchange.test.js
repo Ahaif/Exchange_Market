@@ -291,7 +291,7 @@ contract('Exchange', ([deployer, feeAccount, user1, user2]) =>{
                     balance = await exchange.balanceOf(token.address, user1)
                     balance.toString().should.equal(tokens(1).toString(), 'user1 received tokens')
                     balance = await exchange.balanceOf(ETHER_ADDR, user2)
-                    console.log(balance.toString())
+                    // console.log(balance.toString())
                     // balance.toString().should.equal(etherConv(1).toString(), 'user2 received Ether')
                     balance = await exchange.balanceOf(ETHER_ADDR, user1)
                     balance.toString().should.equal('0', 'user2 Ether deducted')

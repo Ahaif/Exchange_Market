@@ -33,17 +33,16 @@ import { exchangeTokenBalanceSelector } from './selectors'
 
 
 export  const loadWeb3 = (dispatch) =>{
-    if(!window.ethereum)
-    {
-        window.alert('YOU SOULD INSTALL METAMSK AND IMPORT WALLET')
-        return 
-    }
-    const connectionProvider = new ethers.providers.Web3Provider(window.ethereum)
+    // if(!window.ethereum)
+    // {
+    //     window.alert('YOU SOULD INSTALL METAMSK AND IMPORT WALLET')
+    //     return 
+    // }
+    //new ethers.providers.JsonRpcProvider(`https://kovan.infura.io/v3/1b21b86ebb1c4aee8048fb612a51126e`)
+    const connectionProvider  = new ethers.providers.Web3Provider(window.ethereum)
+    console.log(connectionProvider)
     if(!connectionProvider)
-    {
-      window.alert('Please Login with metamask')
-      return 
-    }
+      return null
     dispatch(web3Loaded(connectionProvider))
     return connectionProvider
 }   
@@ -57,12 +56,13 @@ export  const loadAccount = async (connectionProvider, dispatch) =>{
 
 export  const load_Token = async (connectionProvider,networkID, dispatch) =>{
     try{
-        const token = await new ethers.Contract( Token.networks[networkID].address, Token.abi, connectionProvider)
+        console.log(networkID)
+        const token = await new ethers.Contract(Token.networks[networkID].address, Token.abi, connectionProvider)
         dispatch(tokenLoaded(token))
         return token
     }catch(error){
         console.log('Contract is not Deployed to the current network')
-        alert('Contract is not Deployed to the current network')
+        // alert('Contract is not Deployed to the current network')
         return null
     }
 }   
