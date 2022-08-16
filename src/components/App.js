@@ -27,13 +27,13 @@ class App extends Component {
   async loadBlockchainData(dispatch)
   {
     
-    const provider = loadWeb3(dispatch)
+    const provider = await loadWeb3(dispatch)
     if(!provider)
     {
       window.alert('connect to metamsk')
       return
     }
-    await loadAccount(provider, dispatch)  
+      await loadAccount(provider, dispatch)  
     
     const networkID = await(await provider.getNetwork()).chainId
     const token = await load_Token(provider, networkID, dispatch)
