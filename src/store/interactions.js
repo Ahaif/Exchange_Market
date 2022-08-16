@@ -32,20 +32,17 @@ import { exchangeTokenBalanceSelector } from './selectors'
 
 
 
-export  const loadWeb3 = (dispatch) =>{
-    // if(!window.ethereum)
-    // {
-    //     window.alert('YOU SOULD INSTALL METAMSK AND IMPORT WALLET')
-    //     return 
-    // }
-    //new ethers.providers.JsonRpcProvider(`https://kovan.infura.io/v3/1b21b86ebb1c4aee8048fb612a51126e`)
+
+export const loadWeb3 = async (dispatch) => {
+  if(typeof window.ethereum!=='undefined'){
     const connectionProvider  = new ethers.providers.Web3Provider(window.ethereum)
-    console.log(connectionProvider)
-    if(!connectionProvider)
-      return null
     dispatch(web3Loaded(connectionProvider))
     return connectionProvider
-}   
+  } else {
+    window.alert('Please install MetaMask')
+    window.location.assign("https://metamask.io/")
+  }
+}
 
 export  const loadAccount = async (connectionProvider, dispatch) =>{
     const accounts = await connectionProvider.listAccounts()
