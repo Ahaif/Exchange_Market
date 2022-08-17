@@ -9,31 +9,34 @@ you should connect to your Ethereum client (i use Ganache on port 8545)
 - make sure that ganache is runinng and export private key of first account to your metamask wallet
 
 Backend :
-    -Smart Contracts: Deployed to Kovan Test Network
-        -> TOKEN : token (HAI) -> functionallity of ERC20 token
-        -> EXCHANGE : manage the logique of exchange market(Trades, Orders Actions, Data Visualisiation )
-        -> Truffle and ether.js for deployment and intercations with Blockchain
+- Smart Contracts: Deployed to Kovan Test Network
+- TOKEN : token (HAI) -> functionallity of ERC20 token
+- EXCHANGE : manage the logique of exchange market(Trades, Orders Actions, Data Visualisiation )
+- Truffle and ether.js for deployment and intercations with Blockchain
+
 Front End:
-    - React application
-    - Redux for state managment
-    - Heroku for app deployment 
+- React application
+- Redux for state managment
+- Heroku for app deployment 
 
 
 # Exchange behavior
-[X] Set the fee account  // Trades fee for exchange market
-[X] Deposit Ether
-[X] Withdraw Ether
-[X] Deposit tokens
-[X] Withdraw tokens
-[X] Check balances
-[X] Make order
-[X] Cancel order
-[X] Fill order
-[X] Charge fees
 
+- [X] Set the fee account  // Trades fee for exchange market
+- [X] Deposit Ether
+- [X] Withdraw Ether
+- [X] Deposit tokens
+- [X] Withdraw tokens
+- [X] Check balances
+- [X] Make order
+- [X] Cancel order
+- [X] Fill order
+- [X] Charge fees
 -------------------
+- Smart Contract Test [truffle test]
+
   Contract: Exchange
-    deployment
+  - deployment
       ✔ track the fee Account
       ✔ track the fee Percent
     fallback
@@ -85,7 +88,7 @@ Front End:
           ✔ rejects unauthorized cancelations
 
   Contract: Token
-    deployment
+  - deployment
       ✔ track the name
       ✔ track the symbol
       ✔ track the decimal
@@ -114,13 +117,13 @@ Front End:
         ✔ rejects invalid receipient
 
 # testing project
--> git clone App repo
--> install project dependencies [npm start]
--> Run ganache and set port to 8545
--> import first account of ganache to your metamask wallet (funds sourcing)
--> deploy smart contracts to Ganache network [truffle migrate --reset]
---> seed exhchange with orders for data visualization [truffle exec scripts/seed_exchange.js]
---> Run Project [npm start]
+- git clone App repo
+- install project dependencies [npm start]
+- Run ganache and set port to 8545
+- import first account of ganache to your metamask wallet (funds sourcing)
+- deploy smart contracts to Ganache network [truffle migrate --reset]
+- seed exhchange with orders for data visualization [truffle exec scripts/seed_exchange.js]
+- Run Project [npm start]
 
 Once browser loaded connect metamask to your browser and everything should be fine 
 
