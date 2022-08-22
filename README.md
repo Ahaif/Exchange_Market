@@ -9,7 +9,7 @@ you should connect to your Ethereum client (i use Ganache on port 8545)
 - make sure that ganache is runinng and export private key of first account to your metamask wallet
 
 Backend :
-- Smart Contracts: Deployed to Kovan Test Network
+- Smart Contracts: Deployed to Local Network [Ganache]
 - TOKEN : token (HAI) -> functionallity of ERC20 token
 - EXCHANGE : manage the logique of exchange market(Trades, Orders Actions, Data Visualisiation )
 - Truffle and ether.js for deployment and intercations with Blockchain
@@ -118,7 +118,7 @@ Front End:
 
 # testing project
 - git clone App repo
-- install project dependencies [npm start]
+- install project dependencies [npm install]
 - Run ganache and set port to 8545
 - import first account of ganache to your metamask wallet (funds sourcing)
 - deploy smart contracts to Ganache network [truffle migrate --reset]
