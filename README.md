@@ -1,8 +1,5 @@
 # Exchange Market
 
-the Application is hosted using Heroku you can test it via this link : https://hai-token-exchange.herokuapp.com/
-(the application is still in test mode please report for any bugs found)
-
 you can see all the dependencies needed for the project in package.json 
 
 you should connect to your Ethereum client (i use Ganache on port 8545)
@@ -117,15 +114,14 @@ Front End:
         ✔ rejects invalid receipient
 
 # testing project
-- git clone App repo
-- install project dependencies [npm install]
-- Run ganache and set port to 8545
-- import first account of ganache to your metamask wallet (funds sourcing)
-- deploy smart contracts to Ganache network [truffle migrate --reset]
-- seed exhchange with orders for data visualization [truffle exec scripts/seed_exchange.js]
-- Run Project [npm start]
+  - git clone App repo
+  - install project dependencies [npm install]
+  - Run ganache and set port to 8545
+  - import first account of ganache to your metamask wallet (funds sourcing)
+  - deploy smart contracts to Ganache network [truffle migrate --reset]
+  - seed exhchange with orders for data visualization [truffle exec scripts/seed_exchange.js]
+  - Run Project [npm start]
 
-Once browser loaded connect metamask to your browser and everything should be fine 
+  - Once browser loaded connect metamask to your browser and everything should be fine 
 
-if you use Heroku link make sure you run Ganache in Port 8545
-and deploy the contracts to Ganache using [truffle migrate --reset]
+
