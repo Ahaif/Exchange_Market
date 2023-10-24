@@ -27,90 +27,86 @@ Front End :
   - [X] Fill order
   - [X] Charge fees
 -------------------
-- Smart Contract Test [truffle test]
+  - Smart Contract Test [Smart contracts test before deployment]
 
   Contract: Exchange
   - deployment
-      ✔ track the fee Account
-      ✔ track the fee Percent
-    fallback
-      ✔ reverts when ETher is sent (213ms)
-    deposit Ether
-      ✔ Track Ether deposit (80ms)
-      ✔ emit Deposit event
-    withdraw Ether
-      sucess
-        ✔ withdraws Ether funds
-        ✔ emit Withdraw event
-      failure
-        ✔ reject Withdraw for insufficient balance (44ms)
-    deposit Tokens
-      success
-        ✔ track the token deposit (76ms)
-        ✔ emit Deposit event
-      failure
-        ✔ Rejects Ether deposit
-        ✔ fails when No tokens Approved (120ms)
-    Withdraw Tokens
-      success
-        ✔ Withdraw Tokens Funds
-        ✔ emit Withdraw event
-      failure
-        ✔ reject Ether Withdraw
-        ✔ fails to insufficient balances
-    Check balances
-      ✔ returns user balance (38ms)
-    Making Orders
-      ✔ track the new order created  (47ms)
-      ✔ emit an order event
-    Order Actions
-      Filling Orders
-        success
-          ✔ execute Trade & charge Fees (297ms)
-          ✔ updates filled orders (39ms)
-          ✔ emit an "Trade" event
-        failure
-          ✔ rejects invalid order Ids (48ms)
-          ✔ rejects already filled order (301ms)
-          ✔ rejects cancelled orders (156ms)
-     Cancelling Orders
-        success
-          ✔ updates cancelled orders
-          ✔ emit an order event
-        failure
-          ✔ rejects invalid orders ID (47ms)
-          ✔ rejects unauthorized cancelations
+      - track the fee Account
+      - track the fee Percent
+  - fallback
+      - reverts when ETher is sent (213ms)
+  - deposit Ether
+      - Track Ether deposit (80ms)
+      - emit Deposit event
+  - withdraw Ether
+      - sucess
+        - withdraws Ether funds
+        - emit Withdraw event
+      - failure
+          - reject Withdraw for insufficient balance (44ms)
+  - deposit Tokens
+      - success
+        - track the token deposit (76ms)
+        - emit Deposit event
+      - failure
+        - Rejects Ether deposit
+        - fails when No tokens Approved (120ms)
+  - Withdraw Tokens
+    - success
+        - Withdraw Tokens Funds
+        - emit Withdraw event
+    - failure
+        - reject Ether Withdraw
+        - fails to insufficient balances
+    - Check balances
+      - returns user balance (38ms)
+    - Making Orders
+      - track the new order created  (47ms)
+      - emit an order event
+    - Order Actions
+      - Filling Orders
+        - success
+          - execute Trade & charge Fees (297ms)
+          - updates filled orders (39ms)
+          - emit an "Trade" event
+        - failure
+          - rejects invalid order Ids (48ms)
+          - rejects already filled order (301ms)
+          - rejects cancelled orders (156ms)
+    - Cancelling Orders
+        - success
+          - updates cancelled orders
+          - emit an order event
+        - failure
+          - rejects invalid orders ID (47ms)
+          - rejects unauthorized cancelations
 
-  Contract: Token
+  - Contract: Token
   - deployment
-      ✔ track the name
-      ✔ track the symbol
-      ✔ track the decimal
-      ✔ track the total supply
-      ✔ assign total supply to deployer (196ms)
-    sending Tokens
-      sucess
-        ✔ transfer token balances (56ms)
-        ✔ emit Transfer
-      failure
-        ✔ rejects insufissient balances
-        ✔ rejects invalid receipient
-    approving tokens
-      success
-        ✔ allocates an allowance for the delegate token spending (49ms)
-        ✔ emit an Approval event
-      failure
-        ✔ rejects invalid spender (171ms)
-    sending allowance Tokens
-      sucess
-        ✔ transfer token balances (196ms)
-        ✔ decrease  allowance
-        ✔ emit Transfer
-      failure
-        ✔ rejects insufissient balances (209ms)
-        ✔ rejects invalid receipient
-
-
-  - Once browser loaded connect metamask to your browser and everything should be fine 
-
+      - track the name
+      - track the symbol
+      - track the decimal
+      - track the total supply
+      - assign total supply to deployer (196ms)
+  - sending Tokens
+    - sucess
+      - transfer token balances (56ms)
+      - emit Transfer
+    - failure
+        - rejects insufissient balances
+        - rejects invalid receipient
+    - approving tokens
+      - success
+        - allocates an allowance for the delegate token spending (49ms)
+        - emit an Approval event
+      - failure
+        - rejects invalid spender (171ms)
+    - sending allowance Tokens
+      - sucess
+        - transfer token balances (196ms)
+        - decrease  allowance
+        - emit Transfer
+      - failure
+        - rejects insufissient balances (209ms)
+        - rejects invalid receipient
 
