@@ -8,7 +8,9 @@ import { seedExchange } from "../../scripts/seed-exchange.mjs";
 test("seed creates funded open orders, fills and cancellation; rerun sends no transactions", async () => {
   const chain = ganache.provider({
     logging: { quiet: true },
-    chain: { hardfork: "shanghai" },
+    wallet: { deterministic: true },
+    chain: { hardfork: "shanghai", time: new Date("2026-01-01T00:00:00Z") },
+    miner: { timestampIncrement: 1 },
   });
   const p = new BrowserProvider(chain, undefined, { cacheTimeout: 0 });
   p.pollingInterval = 20;

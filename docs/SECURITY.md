@@ -7,7 +7,7 @@ This is an unaudited testnet learning project. Contract tests and dependency sca
 - A local `npm audit --omit=dev` run on 2026-11-12 reported 27 advisory entries, all under `node_modules/ganache/`. Ganache is used by the local tests and optional local chain; it is not imported by the browser application. npm can still report bundled transitive dependencies under this dev tool with `--omit=dev`.
 - These findings remain unresolved. Replacing Ganache with a maintained local EVM runner is tracked in the roadmap. Do not expose the local Ganache RPC as a public production service.
 - This audit result is a point-in-time observation, not an ongoing guarantee. Rerun the audit when changing dependencies.
-- `npm run security:check` checks Git-tracked paths for private environment files, recognized private-key assignments, private-key PEM headers, and matches to locally available private values. It intentionally prints paths, never credential values. CI has no access to your local private values; its pattern checks are limited. This does not replace a dedicated secret scanner or historical audit.
+- `npm run security:check` checks Git-tracked paths for private environment files, recognized private-key assignments, private-key PEM headers, and matches to locally available private values only when explicitly opted in with `--include-local-values`. The default check does not read private environment files. It intentionally prints paths, never credential values. CI has no access to your local private values; its pattern checks are limited. This does not replace a dedicated secret scanner or historical audit.
 
 ## GitHub repository alert report
 
@@ -22,3 +22,9 @@ The old repository already committed environment content and key-like strings. C
 ## Contract and product limits
 
 The contract uses OpenZeppelin standards, checked balances and a reentrancy guard. Further work includes adversarial contract tests, invariants, fuzzing and independent review. Order liquidity is not reserved, chart history is bounded, public RPC reads can fail, and all assets are testnet-only. An L2 production release requires the roadmap's security gates.
+
+The current detailed assessment is [SECURITY_THREAT_MODEL.md](SECURITY_THREAT_MODEL.md). Historical audit counts above are not revalidated vulnerability totals for every future release.
+
+## Current engineering-task dependency evidence
+
+A fresh `npm audit --omit=dev --json` exited 1 and reported 27 entries (4 critical, 17 high, 5 moderate, 1 low), with all reported nodes under Ganache. The [machine-readable summary](evidence/dependency-audit-summary.json) records the scope and affected paths. This does not triage or supersede the broader historical GitHub alert snapshot, prove exploitability, or establish that current browser dependencies are vulnerability-free. No forced dependency upgrade was applied.

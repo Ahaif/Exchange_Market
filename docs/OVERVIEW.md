@@ -8,27 +8,7 @@ A fixed-supply HAI token and a fully on-chain HAI/ETH order book. A user deposit
 
 The public site and local development use the same Sepolia contracts and therefore share orders, trades and deposited balances. Seeded demo transactions are real testnet activity, not fake prices or external market data. The market can be read without connecting a wallet; connecting is required for deposits and trading.
 
-```mermaid
-flowchart LR
-  Visitor[Visitor browser: Next.js / React / TypeScript]
-  PublicRPC[Public read RPC]
-  Wallet[Injected wallet: user signatures]
-  WalletRPC[Wallet RPC]
-  Sepolia[Ethereum Sepolia]
-  HAI[HAI ERC-20]
-  Exchange[Exchange custody + order book]
-  Scripts[Node deployment / seed scripts]
-  Env[Ignored local credential files]
-  Visitor -->|read-only ethers calls; 15-second refresh| PublicRPC
-  PublicRPC --> Sepolia
-  Visitor -->|request signature| Wallet
-  Wallet --> WalletRPC --> Sepolia
-  Sepolia --> HAI
-  Sepolia --> Exchange
-  Exchange -->|SafeERC20 deposits / withdrawals| HAI
-  Env --> Scripts
-  Scripts -->|signed testnet transactions| Sepolia
-```
+See the canonical [current, sequence and future architecture diagrams](ARCHITECTURE.md).
 
 ## Stack and ownership
 
@@ -70,18 +50,7 @@ Exact installed versions are generated from the lockfile into [PROGRESS.md](PROG
 
 Base Sepolia is the proposed first L2 test environment, followed by Base mainnet only after readiness gates. This is a project recommendation, not an implemented chain switch. Base Sepolia uses chain 84532; see the [Base network documentation](https://docs.base.org/base-chain/quickstart/connecting-to-base).
 
-```mermaid
-flowchart LR
-  UI[Next.js browser app] -->|wallet-signed writes| L2[HAI + Exchange on Base]
-  UI -->|paginated reads / live updates| API[TypeScript API]
-  L2 -->|logs + block headers| Indexer[Durable event indexing worker]
-  Indexer --> DB[(PostgreSQL)]
-  API --> DB
-  API --> Cache[Optional cache / live update transport]
-  L2 -->|rollup data and settlement| L1[Ethereum]
-  Monitor[Logs / metrics / alerts] --- API
-  Monitor --- Indexer
-```
+See the canonical [current, sequence and future architecture diagrams](ARCHITECTURE.md).
 
 Use a dedicated long-running worker for historical backfill, checkpoints and reorg recovery. Do not run indexing inside short-lived page requests. The API serves order history, chart candles and account activity; it does not hold trading keys or replace contract validation. PostgreSQL is a rebuildable read model keyed by chain ID, contract address, transaction hash and log index. Wallet signatures remain responsible for writes.
 
@@ -96,3 +65,5 @@ Latest 100 orders only; periodic polling; no pagination, complete historical ind
 ## Trading terminal
 
 The dark terminal arranges a candlestick/area chart and volume pane beside a price-sorted order book and limit order form. Clicking a quote populates the form. Recent activity and wallet/exchange balances sit below. Chart display numbers use floating point; submitted amounts retain bigint arithmetic. Visible TradingView attribution is retained. See `THIRD_PARTY_NOTICES.md`.
+
+Engineering review: [audit](ENGINEERING_AUDIT.md), [architecture](ARCHITECTURE.md), [STRIDE model](SECURITY_THREAT_MODEL.md), [performance](PERFORMANCE.md) and [capability status](ENGINEERING_STATUS.md).

@@ -1,0 +1,265 @@
+{
+  "command": "npm audit --omit=dev --json",
+  "exitStatus": 1,
+  "recordedAt": "2026-11-12T20:18:01.654Z",
+  "counts": {
+    "info": 0,
+    "low": 1,
+    "moderate": 5,
+    "high": 17,
+    "critical": 4,
+    "total": 27
+  },
+  "affected": [
+    {
+      "name": "@microsoft/api-extractor",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/@microsoft/api-extractor"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "@microsoft/api-extractor-model",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/@microsoft/api-extractor-model"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "@microsoft/tsdoc-config",
+      "severity": "moderate",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/@microsoft/tsdoc-config"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "@rushstack/node-core-library",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/@rushstack/node-core-library"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "ajv",
+      "severity": "moderate",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/ajv"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "bn.js",
+      "severity": "moderate",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/asn1.js/node_modules/bn.js",
+        "node_modules/ganache/node_modules/bn.js",
+        "node_modules/ganache/node_modules/create-ecdh/node_modules/bn.js",
+        "node_modules/ganache/node_modules/diffie-hellman/node_modules/bn.js",
+        "node_modules/ganache/node_modules/miller-rabin/node_modules/bn.js",
+        "node_modules/ganache/node_modules/public-encrypt/node_modules/bn.js"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "brace-expansion",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/brace-expansion"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "braces",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/braces"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "browserify-sign",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/browserify-sign"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "browserslist",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/browserslist"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "cipher-base",
+      "severity": "critical",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/cipher-base"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "cross-spawn",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/cross-spawn"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "diff",
+      "severity": "low",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/diff",
+        "node_modules/ganache/node_modules/ts-node/node_modules/diff"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "js-yaml",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/js-yaml"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "json5",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/json5"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "micromatch",
+      "severity": "moderate",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/micromatch"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "minimatch",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/minimatch"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "mocha",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/mocha"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "nanoid",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/nanoid"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "pbkdf2",
+      "severity": "critical",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/pbkdf2"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "picomatch",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/picomatch"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "semver",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/semver"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "serialize-javascript",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/serialize-javascript"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "sha.js",
+      "severity": "critical",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/sha.js"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "terser-webpack-plugin",
+      "severity": "moderate",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/terser-webpack-plugin"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "validator",
+      "severity": "high",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/validator"
+      ],
+      "fixAvailable": true
+    },
+    {
+      "name": "webpack",
+      "severity": "critical",
+      "isDirect": false,
+      "nodes": [
+        "node_modules/ganache/node_modules/webpack"
+      ],
+      "fixAvailable": true
+    }
+  ],
+  "qualification": "Registry audit results, not exploit verification. npm reports bundled Ganache descendants despite omit=dev. No automatic remediation performed."
+}

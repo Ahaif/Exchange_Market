@@ -43,21 +43,7 @@ Website release evidence: [website.json](../deployments/website.json). Contract 
 
 ## 3. Architecture
 
-```mermaid
-flowchart TB
-  Host[Static website hosting] -->|HTML / CSS / JavaScript| Browser[Next.js / React UI in visitor browser]
-  Browser -->|read market without signing| ReadRPC[Public read RPC]
-  Browser -->|request signature| Wallet[Visitor Ethereum wallet]
-  Wallet -->|signed transaction| WalletRPC[Wallet RPC]
-  ReadRPC --> Chain[Ethereum Sepolia]
-  WalletRPC --> Chain
-  Chain --> Token[HAI ERC-20 contract]
-  Chain --> Exchange[Exchange contract: balances / orders / settlement]
-  Exchange -->|token custody transfers| Token
-  Local[Local deployment / seed scripts] -->|operator-signed testnet transactions| Chain
-  Private[Ignored local credentials] --> Local
-  Git[GitHub source / docs] -->|build and publish| Host
-```
+See the canonical [current, sequence and future architecture diagrams](ARCHITECTURE.md).
 
 The wallet signs; RPC nodes transport requests; contracts validate state changes. The hosting service serves the interface and does not hold visitor trading keys. Assets deposited into the exchange are held by the contract, not merely displayed in a browser balance.
 
@@ -87,7 +73,7 @@ Exchange_Market/
 │   ├── page.tsx                    Trading terminal, wallet lifecycle and user actions
 │   ├── layout.tsx                  Root document and page metadata
 │   ├── globals.css                 Terminal design and responsive layouts
-│   └── components/MarketChart.tsx  Chart lifecycle, intervals, candles/area and volume
+│   └── components/                 MarketChart plus shared production OrderTable
 ├── lib/
 │   ├── contracts.ts                Public network settings, addresses and human-readable ABIs
 │   ├── trades.ts                   Bounded Trade-event reads and execution timestamps
@@ -102,6 +88,7 @@ Exchange_Market/
 │   ├── seed-exchange.mjs           Resumable two-trader demo seeding
 │   ├── update-progress.mjs         Generate/check the development snapshot
 │   └── check-boundaries.mjs        Limited tracked-file credential checks
+├── benchmarks/                     Isolated local suites and measured JSON baselines
 ├── test/v1/
 │   ├── contracts.test.mjs          Token, settlement, fee and failure-path regressions
 │   ├── seed.test.mjs               Seed interruption/retry/rerun behavior
@@ -156,24 +143,7 @@ Reads refresh every 15 seconds while the page is mounted. Polling does not creat
 
 ### Depositing HAI
 
-```mermaid
-sequenceDiagram
-  participant User
-  participant UI as Browser UI
-  participant Wallet
-  participant Token as HAI token
-  participant Exchange
-  User->>UI: Deposit HAI amount
-  UI->>Wallet: Request approve(exchange, amount), if allowance is insufficient
-  Wallet->>Token: Signed approval transaction
-  Token-->>UI: Confirmation receipt
-  UI->>Wallet: Request depositToken(amount)
-  Wallet->>Exchange: Signed deposit transaction
-  Exchange->>Token: safeTransferFrom(user, exchange, amount)
-  Exchange->>Exchange: Credit user's exchange balance
-  Exchange-->>UI: Confirmation receipt / Deposit event
-  UI->>Exchange: Refresh balances and order state
-```
+See the canonical [current, sequence and future architecture diagrams](ARCHITECTURE.md).
 
 ETH deposits use `depositEther` with a transaction value and need no ERC-20 approval. Withdrawals debit exchange balances and transfer the requested asset back to the wallet.
 
@@ -303,13 +273,13 @@ The seed recipe creates 10 orders: 6 open, 3 filled and 1 cancelled at initial v
 | History | Bounded log ranges; unique block timestamp requests; resolved fill cache | Old trades outside the window are absent from a fresh chart |
 | Computation | Local sorting and map-based candle aggregation; bigint transaction arithmetic | Display/plot values are rounded; depth is not reserved liquidity |
 | Contract operations | Optimized compilation, direct mapping lookups, standard libraries | No claim of measured production gas optimality |
-| Regression tests | 10 test cases covering allowances, both trade directions, fees, insufficient funds, order validation, cancellation, withdrawals, seed interruption/retry/idempotency and candle aggregation | No complete adversarial-token suite, invariant/fuzz suite or independent audit |
+| Regression tests | 20 test cases covering allowances, both trade directions, fees, insufficient funds, order validation, cancellation, withdrawals, seed interruption/retry/idempotency and candle aggregation | No complete adversarial-token suite, invariant/fuzz suite or independent audit |
 | CI | Tracked credential patterns, progress freshness, tests and typed production build | Local successful checks are distinct from a particular remote Actions run |
 | Token/custody security | OpenZeppelin ERC20/SafeERC20, checked arithmetic, balance validation and guarded withdrawals | Contracts hold deposits; a contract bug remains a custody risk |
 | Secrets | Ignored private environment files; public/private settings separated; tracked-file checks | Pattern checks are incomplete; original Git history contained credential material |
 | Dependency review | Point-in-time audit findings documented | Local audit found Ganache-subtree advisories; GitHub separately reported 66 repository vulnerabilities pending triage. Maintained test-runner migration is planned |
 
-The last implementation validation passed all 10 tests, the production build, TypeScript and documentation/credential checks. Automated visual/browser interaction verification was unavailable. See [SECURITY.md](SECURITY.md) for exact limits and audit findings. No feature in this guide should be read as an independent security certification.
+The last implementation validation passed all 20 tests, the production build, TypeScript and documentation/credential checks. Automated visual/browser interaction verification was unavailable. See [SECURITY.md](SECURITY.md) for exact limits and audit findings. No feature in this guide should be read as an independent security certification.
 
 ## 12. Key learning outcomes
 
@@ -344,3 +314,5 @@ npm run docs:check
 CI rejects a stale generated snapshot; it does not infer that a planned feature is finished or validate every sentence of prose. `AGENTS.md` asks future coding sessions to keep this documentation synchronized. Commit and push changes to retain them on GitHub. Ignored keys need separate private backups; never add them to Git to preserve progress.
 
 The next technical stages are easier test-token onboarding and browser tests, then a reorg-aware event indexer, PostgreSQL, a paginated API, observability and a fresh Base Sepolia release. Mainnet is a later decision gated by security review and operational readiness. See [the L2 roadmap](ROADMAP.md).
+
+For the current engineering evidence, use [ENGINEERING_AUDIT.md](ENGINEERING_AUDIT.md), [ENGINEERING_STATUS.md](ENGINEERING_STATUS.md) and [PERFORMANCE.md](PERFORMANCE.md). Older validation statements describe their historical release; the current command ledger is [VERIFICATION.md](VERIFICATION.md).

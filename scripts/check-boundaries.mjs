@@ -5,7 +5,9 @@ const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
   .split("\0")
   .filter(Boolean);
 const known = [];
-for (const path of [".env", ".env.local", ".env.demo.local"])
+for (const path of process.argv.includes("--include-local-values")
+  ? [".env", ".env.local", ".env.demo.local"]
+  : [])
   if (existsSync(path)) {
     for (const [key, value] of Object.entries(
       parseEnv(readFileSync(path, "utf8")),

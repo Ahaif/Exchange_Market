@@ -1,14 +1,54 @@
 # HAI Exchange
 
-A full-stack learning project evolving into an Ethereum L2 exchange. Today it runs as a **Next.js trading terminal backed by Solidity contracts on Ethereum Sepolia**.
+A security-conscious engineering demonstration of a HAI/ETH on-chain order book. Next.js and TypeScript provide the trading terminal; Solidity contracts hold deposits and settle full-fill limit orders on Ethereum Sepolia. **Unaudited testnet software, not a production exchange or investment product.**
 
-**Start here: [Complete project guide](docs/PROJECT_GUIDE.md)** — deployment, architecture, file map, business logic, algorithms, running, testing and learning outcomes.
+[Live demo](https://hai-exchange-v1.serenecrown8.chatgpt.site) · [Project guide](docs/PROJECT_GUIDE.md) · [Engineering audit](docs/ENGINEERING_AUDIT.md) · [Capability status](docs/ENGINEERING_STATUS.md)
 
-[Live demo](https://hai-exchange-v1.serenecrown8.chatgpt.site) · [Architecture](docs/OVERVIEW.md) · [Progress](docs/PROGRESS.md) · [L2 roadmap](docs/ROADMAP.md)
+## What it actually does
 
-## Run the project
+- Read a bounded order book and confirmed-fill chart without a wallet.
+- Connect a Sepolia wallet, approve/deposit HAI or deposit ETH, create/fill/cancel orders, and withdraw available deposits.
+- Settle at immutable order amounts with a 0.25% taker fee in the requested asset.
+- Display real seeded testnet activity. No market-price oracle, automatic matching, partial fills or reserved liquidity.
 
-You need **Node.js 22.13 or newer**, npm, and Git.
+The hosted website and contracts work independently of a local server. The existing live demo is a previously published release; local engineering changes are not automatically deployed by a Git push. Public deployment evidence lives in [`deployments/`](deployments/).
+
+## Architecture
+
+```text
+Static Next.js client → wallet-signed writes → Sepolia Exchange + HAI
+                    → public RPC reads → bounded book/history → OHLCV chart
+```
+
+[Canonical Mermaid diagrams](docs/ARCHITECTURE.md) cover context, components, deposits, limit orders, fills, cancellation, withdrawals and trust boundaries. The current backend is on-chain. An indexer, PostgreSQL, TypeScript API and L2 deployment are **NOT IMPLEMENTED**.
+
+## Engineering challenges and evidence
+
+| Challenge | Evidence |
+| --- | --- |
+| Asset/fee accounting and failed settlement | Unequal-direction regressions; deterministic 40-step custody conservation trace |
+| External-transfer threats | Adversarial reentrant/rejecting ETH receiver, fee/false/no-return token fixtures |
+| Approval and submission races | Synchronous transaction gate; account/chain/revision recheck after approval; helper tests |
+| Sparse/large historical data | UTC OHLCV tests, capped/chunked read policy, experimental event replay benchmark |
+| Recovery and reproducibility | Seed checkpoint/retry/idempotency test, deterministic local EVM and isolated benchmark processes |
+
+These are scoped test results, not exhaustive proofs. [Audit inventory](docs/ENGINEERING_AUDIT.md) distinguishes implementation, assertions and gaps.
+
+## Security model
+
+Wallets retain keys; contracts validate writes regardless of UI/RPC state. The deployed market admits one immutable standard HAI token. Checked arithmetic, SafeERC20 and reentrancy guards protect specific paths. Default checks and benchmarks do not read operator keys.
+
+[STRIDE threat model](docs/SECURITY_THREAT_MODEL.md) assesses 17 threat classes. [Security status](docs/SECURITY.md) records historical credential exposure and unresolved dependency alerts. No independent audit, full reorg-safe indexing, browser wallet suite or mainnet-readiness claim exists. Slither and browser Web Vitals were unavailable in the current environment; limitations are recorded explicitly.
+
+## Performance evidence
+
+Deterministic local benchmarks measure transaction `gasUsed`, event replay, OHLCV, bounded read orchestration, the actual production table's Node server rendering, isolated Next.js builds and loopback static HTTP. No live Sepolia performance is claimed.
+
+See [methodology and measured results](docs/PERFORMANCE.md) and [machine-readable JSON](benchmarks/results/). These are hardware-specific baselines, not speedup claims or CI latency targets. Browser FCP/LCP/CLS/INP remain unmeasured.
+
+## Run locally
+
+Use Node.js **22.13 or newer**, npm and Git:
 
 ```bash
 git clone https://github.com/Ahaif/Exchange_Market.git
@@ -17,97 +57,33 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:3000**. That's enough to view the live order book and chart. You do **not** need Ganache, a local fork, a private key or an environment file to explore the UI. The deployed Sepolia contracts are configured by default. Press **Ctrl+C** to stop the app.
+Open **http://localhost:3000**. No private key, local fork or environment file is needed to read the default Sepolia market. Trading requires a Sepolia wallet, test ETH and operator-distributed HAI. Local/hosted UIs share chain state. Stop with **Ctrl+C**.
 
-## Try a trade
-
-1. Switch your browser wallet to **Ethereum Sepolia**, then click **Connect wallet**.
-2. Get Sepolia test ETH for gas. Ask the demo operator for HAI test tokens; there is no public faucet yet.
-3. Under **Assets**, deposit ETH or HAI. HAI requires an approval transaction followed by a deposit transaction.
-4. Enter a limit price and amount, or click an order-book price to populate it. Place your order.
-5. Use a second wallet with deposited assets to fill the order. Self-trades are blocked.
-6. View the result under **Filled orders**, cancel your own open orders, or withdraw available assets.
-
-The demo was seeded with **6 open orders, 3 fills and 1 cancellation**. Actual counts change as visitors trade. Candles and volume use confirmed trade execution times, not order creation times. The chart reads a bounded sample (latest 100 orders / last 50,000 blocks); it is **not a global price feed or a complete 24-hour market history**. Sparse history is shown honestly, without invented candles.
-
-## Validate changes
+## Test and reproduce
 
 ```bash
-npm test                 # contract, seed recovery and OHLCV aggregation tests
-npm run typecheck        # TypeScript checks
-npm run build            # production static export in out/
-npm run docs:update      # regenerate development progress after changing source
-npm run docs:check       # fail if development snapshot is stale
-npm run security:check   # check tracked environment files / recognized credentials
+npm test
+npm run typecheck
+npm run build
+npm run security:check
+npm run docs:validate
+npm run docs:check
+npm run benchmark          # full local suite; no public-chain transactions
+npm run benchmark:smoke    # shorter CI execution check, no latency threshold
 ```
 
-Tests run against an isolated local EVM. They do not need private keys or spend Sepolia funds. GitHub Actions runs tracked-file credential checks, documentation checks, tests and the production build on pushes and pull requests. Ganache can print a native-module fallback warning on newer Node versions; it then uses its JavaScript implementation.
+Individual scripts: `benchmark:contracts`, `benchmark:data`, `benchmark:frontend`, `benchmark:build`. Tests/benchmarks use synthetic local accounts, not `.env.local`. `npm run build` exports `out/`; `npm start` is not used for this static export. [Exact command results](docs/VERIFICATION.md), [operator instructions](docs/OPERATIONS.md), [chart attribution](THIRD_PARTY_NOTICES.md).
 
-## What's inside
+## Limits and next engineering milestones
 
-| Area           | Stack                                                            |
-| -------------- | ---------------------------------------------------------------- |
-| Trading UI     | Next.js App Router, React, TypeScript, responsive CSS            |
-| Chart          | TradingView Lightweight Charts; confirmed-fill OHLCV aggregation |
-| Wallet and RPC | ethers v6; public read access, wallet-signed writes              |
-| Contracts      | Solidity, OpenZeppelin ERC20, SafeERC20, ReentrancyGuard         |
-| Tooling        | solc-js, Node test runner, Ganache, GitHub Actions               |
-| Hosting        | Static export on Sites                                           |
-| Next stage     | Event indexer, PostgreSQL, TypeScript API, Base Sepolia          |
+The live view is capped at 100 orders and 50,000 historical blocks; reads are not block-pinned or reorg-safe. Orders do not reserve funds. Outgoing transfer-tax tokens are not generally supported. Wallet/browser tests, static analysis, stateful property coverage, dependency triage and independent review remain outstanding.
 
-Today the chain is the backend. An off-chain API/database and L2 deployment are planned, not implemented. See [architecture and connections](docs/OVERVIEW.md) for the diagrams and [roadmap](docs/ROADMAP.md) for acceptance criteria.
+The [six engineering gates](docs/ENGINEERING_STATUS.md#engineering-roadmap--separate-from-historical-demo-milestones) are documentation/reproducibility → security/invariants → measured optimization → indexing/persistence → L2 testnet validation → independent review/readiness assessment. CI passing does not authorize a production release.
 
-## Best practices demonstrated
+## HAI and Outfbox: long-term direction
 
-- **Standard contracts:** OpenZeppelin ERC-20 behavior instead of custom allowance logic; fixed token supply and immutable exchange configuration.
-- **Checked settlement:** validate balances and order status, charge fees in the correct asset, and use checks before external transfers with a reentrancy guard.
-- **Precise transaction values:** bigint/fixed-point arithmetic for submitted amounts; floating point is limited to charting and display estimates.
-- **Clear transaction lifecycle:** wait for approval and transaction receipts, handle rejected signatures, and reset wallet state after account/network changes.
-- **Recoverable operations:** save deployment and seed transaction checkpoints before waiting; rerunning reuses completed steps.
-- **Bounded data access:** cap market reads, avoid overlapping polling, cache resolved fills, and distinguish sample statistics from full-history metrics.
-- **Reproducible verification:** committed lockfile, meaningful regression tests, typed production builds and CI checks.
-- **Honest progress:** milestone evidence, generated source fingerprints and a CI freshness check keep the roadmap tied to development.
+Outfbox is an early-stage conditional-remittance product. HAI Exchange is currently an **independent engineering demonstration**. Integrating HAI with Outfbox is a proposed future direction, not established production functionality. No equity, company-asset redemption, reserves, profit-sharing, investment rights or appreciation guarantees are established here. No tokenomics, staking, new token supply or public trading infrastructure is introduced by this engineering work.
 
-See [security status and known tooling advisories](docs/SECURITY.md). These practices do not replace an independent security review. The current test suite does not prove complete protection against every adversarial token or reentrancy scenario.
+## Keep evidence current
 
-## What I learned building this
-
-- How a React interface connects wallet signatures, RPC calls, transaction receipts and contract events.
-- How ERC-20 balances and allowances differ from balances held inside an exchange.
-- Why unchecked accounting and a wrong asset mapping can break settlement even when a basic happy-path test passes.
-- How to test failure paths, unequal trade quantities, duplicate fills and interrupted deployment/seeding operations.
-- How event timestamps become deterministic candles and volume bars, and why sparse data must not be presented as a liquid market.
-- How to modernize a legacy CRA/Redux/Truffle project while preserving the learning history under `legacy/`.
-- How L2 execution, indexing, persistence and Ethereum settlement fit into the next full-stack architecture.
-
-## Configuration and operator commands
-
-**Only operators need private configuration.** If `.env.local` does not exist, copy `.env.example` to it. Never overwrite an existing environment file containing keys.
-
-- `NEXT_PUBLIC_*`: browser-visible chain, address and public read RPC settings. Never put secrets here.
-- `RPC_URL`, `DEPLOYER_PRIVATE_KEY`, `FEE_ACCOUNT`: local deployment/seeding configuration.
-- `.env.demo.local`: generated local demo-trader key; never commit or publish it.
-
-```bash
-npm run contracts:compile
-npm run contracts:deploy   # intentional deployment/resume; spends testnet gas
-npm run contracts:seed     # intentional demo transactions/resume; spends testnet gas
-npm run chain              # optional local chain, not needed for the Sepolia demo
-```
-
-Detailed setup, seed funding, checkpoint recovery and publication instructions are in [the operator guide](docs/OPERATIONS.md). Deploy the static `out/` directory after building; `npm start` is not used for this export.
-
-## Public contracts and security boundaries
-
-| Contract  | Ethereum Sepolia                                                                                                              |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| HAI token | [0xDE92DBfbb6338E5e883596d4BeA582ca7E525e2a](https://sepolia.etherscan.io/address/0xDE92DBfbb6338E5e883596d4BeA582ca7E525e2a) |
-| Exchange  | [0x60dB75e1304F1b618F90DB444F3F4ef0ab15ef05](https://sepolia.etherscan.io/address/0x60dB75e1304F1b618F90DB444F3F4ef0ab15ef05) |
-
-- Testnet demo only: test assets have no monetary value; contracts are unaudited.
-- Only public deployment records belong in `deployments/`. Private keys, environment files, generated artifacts and local demo credentials stay ignored.
-- The original repository contained tracked credentials. Removing current files does **not** erase Git history. Any real credentials previously committed must be rotated. Historical commits are not rewritten by this update.
-- Visitors sign transactions in their wallets. The browser never receives an operator key. Deposited assets are held by the exchange contract.
-- Orders fill in full and do not reserve funds. Maker withdrawals can leave unfillable orders; settlement rechecks balances. Takers pay 0.25% in the asset they send.
-
-Chart attribution and licensing: [third-party notices](THIRD_PARTY_NOTICES.md).
+Update relevant docs and `docs/roadmap.json`, then run `npm run docs:update`. CI checks the generated source snapshot, local links/diagram structure, tests, types, build and benchmark smoke. Full Mermaid rendering and browser measurements require additional tooling. Start with [PROJECT_GUIDE.md](docs/PROJECT_GUIDE.md) when returning after a break.

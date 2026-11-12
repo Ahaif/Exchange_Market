@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "kind": "data",
+  "mode": "full",
+  "measuredAt": "2026-11-12T19:54:32.944Z",
+  "environment": {
+    "node": "v25.8.1",
+    "os": "darwin 25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M5",
+    "logicalCpus": 10,
+    "memoryGiB": 16,
+    "packages": {
+      "ganache": "7.9.2",
+      "solc": "0.8.30",
+      "next": "16.4.6",
+      "react": "19.3.1",
+      "ethers": "6.17.0"
+    },
+    "contractsSha256": "6e03a88b9ca3f453fbc0a0c51dc5dea74e460e1c44b3501eee267561c46741f6"
+  },
+  "fixture": "Seed-42 LCG; sequential order IDs; 7-second fill spacing; deterministic buy/sell prices and quantities; reversed observations; replay has Order plus Trade/Cancel logs. Synthetic data, not live-chain measurements.",
+  "results": [
+    {
+      "orders": 1000,
+      "events": 1667,
+      "observations": 1000,
+      "eventReplayMs": {
+        "samples": 100,
+        "min": 0.134999999999998,
+        "p50": 0.14329099999999784,
+        "p95": 0.20275000000000176,
+        "p99": 0.21220899999999432,
+        "max": 0.2851669999999942
+      },
+      "ohlcvMs": {
+        "samples": 100,
+        "min": 0.036000000000001364,
+        "p50": 0.039500000000003865,
+        "p95": 0.05233400000000188,
+        "p99": 0.08749999999999858,
+        "max": 0.14099999999999824
+      },
+      "boundedMockReadMs": {
+        "samples": 100,
+        "min": 0.00941699999999912,
+        "p50": 0.011083999999996763,
+        "p95": 0.01675000000000182,
+        "p99": 0.05116600000000204,
+        "max": 0.1552909999999983
+      },
+      "rpcMethodCalls": 300,
+      "maxConcurrentOrderReaders": 10,
+      "historicalRangeCalls": 10
+    },
+    {
+      "orders": 10000,
+      "events": 16667,
+      "observations": 10000,
+      "eventReplayMs": {
+        "samples": 100,
+        "min": 1.6244159999999965,
+        "p50": 1.734499999999997,
+        "p95": 2.0538329999999974,
+        "p99": 2.778415999999993,
+        "max": 4.307915999999977
+      },
+      "ohlcvMs": {
+        "samples": 100,
+        "min": 0.17074999999999818,
+        "p50": 0.1851249999999709,
+        "p95": 0.23345799999998462,
+        "p99": 0.3422919999999863,
+        "max": 1.0964999999999918
+      },
+      "boundedMockReadMs": {
+        "samples": 100,
+        "min": 0.00941699999998491,
+        "p50": 0.011750000000006366,
+        "p95": 0.015541999999982181,
+        "p99": 0.018416000000001986,
+        "max": 0.02391699999998309
+      },
+      "rpcMethodCalls": 300,
+      "maxConcurrentOrderReaders": 10,
+      "historicalRangeCalls": 10
+    },
+    {
+      "orders": 100000,
+      "events": 166667,
+      "observations": 100000,
+      "eventReplayMs": {
+        "samples": 100,
+        "min": 20.192291999999952,
+        "p50": 21.575874999999996,
+        "p95": 29.869583999999975,
+        "p99": 45.393875000000094,
+        "max": 51.67341699999997
+      },
+      "ohlcvMs": {
+        "samples": 100,
+        "min": 2.2150000000001455,
+        "p50": 2.3295420000004015,
+        "p95": 3.734291999999641,
+        "p99": 8.473042000000078,
+        "max": 18.936625000000276
+      },
+      "boundedMockReadMs": {
+        "samples": 100,
+        "min": 0.011625000000094587,
+        "p50": 0.012417000000368716,
+        "p95": 0.012999999999919964,
+        "p99": 0.01312499999994543,
+        "max": 0.013916999999764812
+      },
+      "rpcMethodCalls": 300,
+      "maxConcurrentOrderReaders": 10,
+      "historicalRangeCalls": 10
+    }
+  ],
+  "limits": "Bounded read latency is zero-network injected-reader orchestration; 3 RPC methods per order, excludes fixed market/account calls. Event replay is experimental and not used as the live source."
+}

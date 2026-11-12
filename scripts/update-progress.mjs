@@ -30,11 +30,16 @@ const sources = [
     "src/contracts",
     "scripts",
     "test/v1",
+    "test/helpers",
+    "test/fixtures",
+    "benchmarks",
     ".github",
     "docs",
   ].flatMap(files),
 ]
-  .filter((p) => p !== "docs/PROGRESS.md")
+  .filter(
+    (p) => p !== "docs/PROGRESS.md" && !p.startsWith("benchmarks/results/"),
+  )
   .sort();
 const hash = createHash("sha256");
 for (const file of sources) {
@@ -53,7 +58,8 @@ const done = roadmap.milestones.filter((m) => m.status === "done").length;
 const testCount = files("test/v1")
   .filter((f) => f.endsWith(".test.mjs"))
   .reduce(
-    (n, f) => n + [...readFileSync(f, "utf8").matchAll(/\btest\s*\(\s*["']/g)].length,
+    (n, f) =>
+      n + [...readFileSync(f, "utf8").matchAll(/\btest\s*\(\s*["']/g)].length,
     0,
   );
 const installed = (name) =>
@@ -75,6 +81,8 @@ const lines = [
     (m) =>
       `| ${m.id} · ${m.title} | ${m.status} | ${m.evidence.map((p) => `[${p}](../${p})`).join(", ") || "See [roadmap](ROADMAP.md) acceptance criteria"} |`,
   ),
+  "",
+  "Engineering review: [audit](ENGINEERING_AUDIT.md), [architecture](ARCHITECTURE.md), [threat model](SECURITY_THREAT_MODEL.md), [performance](PERFORMANCE.md), [capability status](ENGINEERING_STATUS.md).",
   "",
   "## Current implementation",
   "",

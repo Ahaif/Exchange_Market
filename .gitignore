@@ -31,3 +31,5 @@ artifacts/
 *.tsbuildinfo
 .site-release/
 deployments/*.seed.lock
+
+benchmarks/results/smoke-*.json

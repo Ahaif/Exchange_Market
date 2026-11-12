@@ -1,8 +1,14 @@
 name: Validate v1
 on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -12,5 +18,8 @@ jobs:
       - run: npm ci
       - run: npm run security:check
       - run: npm run docs:check
+      - run: npm run docs:validate
+      - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - run: npm run benchmark:smoke

@@ -1,3 +1,5 @@
+> This is the historical demo delivery plan. The current six-gate engineering roadmap is in [ENGINEERING_STATUS.md](ENGINEERING_STATUS.md#engineering-roadmap--separate-from-historical-demo-milestones).
+
 # Delivery roadmap: Sepolia demo → full-stack Ethereum L2 app
 
 Statuses live in [roadmap.json](roadmap.json) and are displayed with evidence in [PROGRESS.md](PROGRESS.md). This plan uses completion gates rather than invented dates. Do not treat a demonstration milestone as production readiness.

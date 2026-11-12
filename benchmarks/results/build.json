@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "kind": "build",
+  "mode": "full",
+  "measuredAt": "2026-11-12T19:54:55.439Z",
+  "environment": {
+    "node": "v25.8.1",
+    "os": "darwin 25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M5",
+    "logicalCpus": 10,
+    "memoryGiB": 16,
+    "packages": {
+      "ganache": "7.9.2",
+      "solc": "0.8.30",
+      "next": "16.4.6",
+      "react": "19.3.1",
+      "ethers": "6.17.0"
+    },
+    "contractsSha256": "6e03a88b9ca3f453fbc0a0c51dc5dea74e460e1c44b3501eee267561c46741f6"
+  },
+  "freshBuildWallMs": {
+    "samples": 3,
+    "min": 4326.940542,
+    "p50": 4403.258,
+    "p95": null,
+    "p99": null,
+    "max": 6216.244959000001
+  },
+  "buildSamples": 3,
+  "fixture": "Separate fresh allowlisted checkout and .next directory per build; shared installed dependencies and OS filesystem cache; credentials excluded",
+  "initialHtml": {
+    "bytes": 12102,
+    "scriptTags": 8,
+    "localHttpHeadersMs": {
+      "samples": 100,
+      "min": 0.10612500000024738,
+      "p50": 0.1345839999994496,
+      "p95": 0.2945419999996375,
+      "p99": 0.43145799999911105,
+      "max": 0.453125
+    },
+    "localHttpCompleteMs": {
+      "samples": 100,
+      "min": 0.1191659999985859,
+      "p50": 0.15158399999927497,
+      "p95": 0.33462499999950523,
+      "p99": 0.47541699999965203,
+      "max": 0.49429199999940465
+    }
+  },
+  "limits": "Local loopback static HTTP transport, not browser page-load or internet hosting performance. Three builds are insufficient for p95/p99; those fields are null. No Lighthouse, FCP/LCP/CLS/INP measured."
+}

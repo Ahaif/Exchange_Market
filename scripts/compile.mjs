@@ -1,5 +1,5 @@
 import solc from "solc";
-import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { readFileSync, mkdirSync, writeFileSync, renameSync } from "node:fs";
 const sources = Object.fromEntries(
   ["Token", "Exchange"].map((name) => [
     `${name}.sol`,
@@ -36,12 +36,13 @@ mkdirSync("artifacts", { recursive: true });
 for (const name of ["Token", "Exchange"]) {
   const c = result.contracts[`${name}.sol`][name];
   writeFileSync(
-    `artifacts/${name}.json`,
+    `artifacts/${name}.${process.pid}.tmp`,
     JSON.stringify(
       { abi: c.abi, bytecode: `0x${c.evm.bytecode.object}` },
       null,
       2,
     ),
   );
+  renameSync(`artifacts/${name}.${process.pid}.tmp`, `artifacts/${name}.json`);
 }
 console.log("Compiled Token and Exchange with solc", solc.version());

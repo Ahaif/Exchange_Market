@@ -1,4 +1,10 @@
 "use client";
+import OrderTable from "./components/OrderTable.mjs";
+import { readLatestOrders } from "../lib/read-model.mjs";
+import {
+  createTransactionGate,
+  assertTransactionSession,
+} from "../lib/transaction-session.mjs";
 import MarketChart from "./components/MarketChart";
 import { loadConfirmedTrades } from "../lib/trades";
 import type { TradePoint } from "../lib/candles.mjs";
@@ -79,6 +85,7 @@ export default function ExchangePage() {
   const [updated, setUpdated] = useState("");
   const [marketLoaded, setMarketLoaded] = useState(false);
   const revision = useRef(0);
+  const transactionGate = useRef(createTransactionGate());
   const refreshRequest = useRef(0);
   const refresh = useCallback(
     async (p: BrowserProvider | JsonRpcProvider, a = "") => {
@@ -103,39 +110,24 @@ export default function ExchangePage() {
           exchange.feeBps(),
         ]);
       // Bounded reads keep a public RPC responsive. The demo shows the latest 100 orders.
-      const rows: Order[] = [];
-      for (
-        let end = Number(count);
-        end > Math.max(0, Number(count) - 100);
-        end -= 10
-      ) {
-        const ids = Array.from(
-          { length: Math.min(10, end - Math.max(0, Number(count) - 100)) },
-          (_, i) => end - i,
-        );
-        rows.push(
-          ...(await Promise.all(
-            ids.map(async (id) => {
-              const [o, filled, cancelled] = await Promise.all([
-                exchange.orders(id),
-                exchange.orderFilled(id),
-                exchange.orderCancelled(id),
-              ]);
-              return {
-                id: o.id,
-                user: o.user,
-                tokenGet: o.tokenGet,
-                amountGet: o.amountGet,
-                tokenGive: o.tokenGive,
-                amountGive: o.amountGive,
-                timestamp: o.timestamp,
-                filled,
-                cancelled,
-              };
-            }),
-          )),
-        );
-      }
+      const rows: Order[] = await readLatestOrders(async (id) => {
+        const [o, filled, cancelled] = await Promise.all([
+          exchange.orders(id),
+          exchange.orderFilled(id),
+          exchange.orderCancelled(id),
+        ]);
+        return {
+          id: o.id,
+          user: o.user,
+          tokenGet: o.tokenGet,
+          amountGet: o.amountGet,
+          tokenGive: o.tokenGive,
+          amountGive: o.amountGive,
+          timestamp: o.timestamp,
+          filled,
+          cancelled,
+        };
+      }, Number(count));
       if (version !== revision.current || request !== refreshRequest.current)
         return;
       setBalances([eth, hai, depositedEth, depositedHai]);
@@ -255,7 +247,7 @@ export default function ExchangePage() {
     label: string,
     action: (exchange: Contract, token: Contract) => Promise<void>,
   ) {
-    if (!provider || !account) return;
+    if (!provider || !account || !transactionGate.current.enter()) return;
     const version = revision.current;
     setBusy(label);
     setError("");
@@ -277,6 +269,7 @@ export default function ExchangePage() {
     } catch (e) {
       setError(message(e));
     } finally {
+      transactionGate.current.release();
       setBusy("");
     }
   }
@@ -291,6 +284,7 @@ export default function ExchangePage() {
     return n;
   }
   function funds(withdraw: boolean) {
+    const session = { revision: revision.current, chainId, account };
     return transact(withdraw ? "Withdrawal" : "Deposit", async (e, t) => {
       const n = positive(fundAmount);
       if (asset === "ETH")
@@ -305,6 +299,13 @@ export default function ExchangePage() {
           await confirm(await t.approve(exchangeAddress, n));
           setBusy("Confirm HAI deposit in your wallet");
         }
+        if (!provider) throw new Error("Wallet disconnected");
+        const liveSigner = await provider.getSigner();
+        assertTransactionSession(session, {
+          revision: revision.current,
+          chainId: Number((await provider.getNetwork()).chainId),
+          account: await liveSigner.getAddress(),
+        });
         await confirm(
           withdraw ? await e.withdrawToken(n) : await e.depositToken(n),
         );
@@ -684,32 +685,16 @@ export default function ExchangePage() {
             ))}
           </div>
           <div className="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Order</th>
-                  <th>Side</th>
-                  <th>Price (ETH)</th>
-                  <th>Amount (HAI)</th>
-                  <th>Value (ETH)</th>
-                  <th>Status / action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((o) => (
-                  <tr key={String(o.id)}>
-                    <td>#{String(o.id)}</td>
-                    <td className={isBuy(o) ? "text-buy" : "text-sell"}>
-                      {isBuy(o) ? "Buy" : "Sell"}
-                    </td>
-                    <td>{display(rate(o), 9)}</td>
-                    <td>{display(quantity(o))}</td>
-                    <td>{display(total(o), 9)}</td>
-                    <td>{orderAction(o)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <OrderTable
+              rows={rows.map((o) => ({
+                id: String(o.id),
+                side: isBuy(o) ? "Buy" : "Sell",
+                price: display(rate(o), 9),
+                quantity: display(quantity(o)),
+                total: display(total(o), 9),
+                action: orderAction(o),
+              }))}
+            />
           </div>
           {!rows.length && (
             <div className="empty">

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "kind": "contracts",
+  "mode": "full",
+  "measuredAt": "2026-11-12T19:54:29.799Z",
+  "environment": {
+    "node": "v25.8.1",
+    "os": "darwin 25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M5",
+    "logicalCpus": 10,
+    "memoryGiB": 16,
+    "packages": {
+      "ganache": "7.9.2",
+      "solc": "0.8.30",
+      "next": "16.4.6",
+      "react": "19.3.1",
+      "ethers": "6.17.0"
+    },
+    "contractsSha256": "6e03a88b9ca3f453fbc0a0c51dc5dea74e460e1c44b3501eee267561c46741f6"
+  },
+  "execution": "isolated in-process Ganache; no network RPC or real keys",
+  "chain": {
+    "id": 31337,
+    "hardfork": "shanghai",
+    "time": "2026-01-01T00:00:00Z",
+    "timestampIncrement": 1,
+    "deterministicWallets": true
+  },
+  "compiler": {
+    "version": "0.8.30",
+    "optimizerRuns": 200,
+    "evmVersion": "shanghai"
+  },
+  "warmups": 5,
+  "fixture": "Two funded synthetic Ganache users; existing nonzero balances and warmed fee slots; sequential receipt-confirmed operations",
+  "gasUsed": {
+    "depositEther": {
+      "samples": 100,
+      "min": 31233,
+      "p50": 31233,
+      "p95": 31233,
+      "p99": 31233,
+      "max": 31233
+    },
+    "withdrawEther": {
+      "samples": 100,
+      "min": 38685,
+      "p50": 38685,
+      "p95": 38685,
+      "p99": 38685,
+      "max": 38685
+    },
+    "depositToken": {
+      "samples": 100,
+      "min": 55092,
+      "p50": 55092,
+      "p95": 55092,
+      "p99": 55092,
+      "max": 55092
+    },
+    "withdrawToken": {
+      "samples": 100,
+      "min": 47665,
+      "p50": 47665,
+      "p95": 47665,
+      "p99": 47665,
+      "max": 47665
+    },
+    "makeOrder": {
+      "samples": 100,
+      "min": 166876,
+      "p50": 166876,
+      "p95": 166876,
+      "p99": 166876,
+      "max": 166876
+    },
+    "fillOrder": {
+      "samples": 100,
+      "min": 95071,
+      "p50": 95071,
+      "p95": 95071,
+      "p99": 95071,
+      "max": 95071
+    },
+    "cancelOrder": {
+      "samples": 100,
+      "min": 51970,
+      "p50": 51970,
+      "p95": 51970,
+      "p99": 51970,
+      "max": 51970
+    }
+  },
+  "localReceiptLatencyMs": {
+    "depositEther": {
+      "samples": 100,
+      "min": 24.80845799999952,
+      "p50": 27.038125000000946,
+      "p95": 28.257166999999754,
+      "p99": 29.206499999999323,
+      "max": 29.639917000000423
+    },
+    "withdrawEther": {
+      "samples": 100,
+      "min": 26.948959000001196,
+      "p50": 28.900625000002037,
+      "p95": 30.891999999999825,
+      "p99": 36.38445800000045,
+      "max": 36.91479199999958
+    },
+    "depositToken": {
+      "samples": 100,
+      "min": 43.81175000000076,
+      "p50": 46.22770800000035,
+      "p95": 48.68224999999984,
+      "p99": 51.84183299999859,
+      "max": 53.37837500000023
+    },
+    "withdrawToken": {
+      "samples": 100,
+      "min": 36.82120900000018,
+      "p50": 39.26362499999959,
+      "p95": 43.95895799999926,
+      "p99": 46.47283400000015,
+      "max": 54.09850000000006
+    },
+    "makeOrder": {
+      "samples": 100,
+      "min": 12.595666000000165,
+      "p50": 13.898334000001341,
+      "p95": 15.034457999998267,
+      "p99": 19.73662499999955,
+      "max": 21.484583000001294
+    },
+    "fillOrder": {
+      "samples": 100,
+      "min": 52.64245800000026,
+      "p50": 64.21095799999966,
+      "p95": 70.49729200000002,
+      "p99": 74.60966700000063,
+      "max": 75.31370900000184
+    },
+    "cancelOrder": {
+      "samples": 100,
+      "min": 8.237417000000278,
+      "p50": 9.644374999999854,
+      "p95": 10.055250000001251,
+      "p99": 10.27116599999863,
+      "max": 13.367957999999817
+    }
+  }
+}

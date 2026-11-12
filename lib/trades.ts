@@ -1,3 +1,4 @@
+import { historyRanges } from "./read-model.mjs";
 import { Contract, EventLog, formatEther, type AbstractProvider } from "ethers";
 import {
   exchangeAddress,
@@ -20,15 +21,10 @@ export async function loadConfirmedTrades(
   if (!orders.length) return [];
   const exchange = new Contract(exchangeAddress, exchangeAbi, provider);
   const latest = await provider.getBlockNumber();
-  const start = Math.max(deploymentBlock, latest - 49_999);
   const filter = exchange.filters.Trade(orders.map((o) => o.id));
   const events: EventLog[] = [];
-  for (let from = start; from <= latest; from += 5000) {
-    const logs = await exchange.queryFilter(
-      filter,
-      from,
-      Math.min(from + 4999, latest),
-    );
+  for (const [from, to] of historyRanges(latest, deploymentBlock)) {
+    const logs = await exchange.queryFilter(filter, from, to);
     events.push(
       ...logs.filter((event): event is EventLog => event instanceof EventLog),
     );

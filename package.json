@@ -17,7 +17,14 @@
     "contracts:seed": "node --env-file=.env.local scripts/seed-exchange.mjs",
     "docs:update": "node scripts/update-progress.mjs",
     "docs:check": "node scripts/update-progress.mjs --check",
-    "security:check": "node scripts/check-boundaries.mjs"
+    "security:check": "node scripts/check-boundaries.mjs",
+    "benchmark": "node benchmarks/run.mjs",
+    "benchmark:contracts": "node benchmarks/contracts.mjs",
+    "benchmark:data": "node benchmarks/data.mjs",
+    "benchmark:frontend": "node benchmarks/frontend.mjs",
+    "benchmark:build": "node benchmarks/build.mjs",
+    "benchmark:smoke": "node benchmarks/run.mjs --smoke",
+    "docs:validate": "node scripts/check-docs.mjs"
   },
   "dependencies": {
     "ethers": "^6.17.0",

@@ -22,7 +22,9 @@ let chain,
 before(async () => {
   chain = ganache.provider({
     logging: { quiet: true },
-    chain: { hardfork: "shanghai" },
+    wallet: { deterministic: true },
+    chain: { hardfork: "shanghai", time: new Date("2026-01-01T00:00:00Z") },
+    miner: { timestampIncrement: 1 },
   });
   p = new BrowserProvider(chain);
   [owner, maker, taker, fees] = await Promise.all(

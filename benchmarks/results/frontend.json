@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "kind": "frontend",
+  "mode": "full",
+  "measuredAt": "2026-11-12T20:13:23.010Z",
+  "environment": {
+    "node": "v25.8.1",
+    "os": "darwin 25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M5",
+    "logicalCpus": 10,
+    "memoryGiB": 16,
+    "packages": {
+      "ganache": "7.9.2",
+      "solc": "0.8.30",
+      "next": "16.4.6",
+      "react": "19.3.1",
+      "ethers": "6.17.0"
+    },
+    "contractsSha256": "6e03a88b9ca3f453fbc0a0c51dc5dea74e460e1c44b3501eee267561c46741f6"
+  },
+  "reactMode": "production",
+  "results": [
+    {
+      "rows": 100,
+      "htmlBytes": 11641,
+      "serverRenderMs": {
+        "samples": 100,
+        "min": 0.0689999999999884,
+        "p50": 0.08370800000000145,
+        "p95": 0.19950000000000045,
+        "p99": 0.264166000000003,
+        "max": 0.33104099999999903
+      }
+    },
+    {
+      "rows": 1000,
+      "htmlBytes": 115973,
+      "serverRenderMs": {
+        "samples": 100,
+        "min": 0.6679999999999922,
+        "p50": 0.7488340000000022,
+        "p95": 1.1588749999999948,
+        "p99": 2.4797920000000033,
+        "max": 2.87037500000001
+      }
+    },
+    {
+      "rows": 10000,
+      "htmlBytes": 1168253,
+      "serverRenderMs": {
+        "samples": 100,
+        "min": 7.765708000000018,
+        "p50": 8.827875000000006,
+        "p95": 10.400458000000071,
+        "p99": 18.10125000000002,
+        "max": 25.720624999999927
+      }
+    }
+  ],
+  "limits": "Actual production OrderTable component, server-rendered in Node. 1k/10k rows are stress fixtures above the live 100-order cap. This does not measure browser paint, hydration, canvas charts, layout, interaction latency or wallet flows.",
+  "browserMetrics": {
+    "status": "blocked",
+    "reason": "Browser automation host unavailable in this environment; no browser performance results claimed.",
+    "FCP": null,
+    "LCP": null,
+    "CLS": null,
+    "INP": null
+  }
+}
