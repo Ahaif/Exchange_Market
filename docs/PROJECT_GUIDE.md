@@ -307,7 +307,7 @@ The seed recipe creates 10 orders: 6 open, 3 filled and 1 cancelled at initial v
 | CI | Tracked credential patterns, progress freshness, tests and typed production build | Local successful checks are distinct from a particular remote Actions run |
 | Token/custody security | OpenZeppelin ERC20/SafeERC20, checked arithmetic, balance validation and guarded withdrawals | Contracts hold deposits; a contract bug remains a custody risk |
 | Secrets | Ignored private environment files; public/private settings separated; tracked-file checks | Pattern checks are incomplete; original Git history contained credential material |
-| Dependency review | Point-in-time audit findings documented | Known Ganache-subtree advisories remain; maintained test-runner migration is planned |
+| Dependency review | Point-in-time audit findings documented | Local audit found Ganache-subtree advisories; GitHub separately reported 66 repository vulnerabilities pending triage. Maintained test-runner migration is planned |
 
 The last implementation validation passed all 10 tests, the production build, TypeScript and documentation/credential checks. Automated visual/browser interaction verification was unavailable. See [SECURITY.md](SECURITY.md) for exact limits and audit findings. No feature in this guide should be read as an independent security certification.
 
