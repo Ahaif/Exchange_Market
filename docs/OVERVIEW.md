@@ -1,6 +1,6 @@
 # HAI Exchange: architecture and development overview
 
-Start with [live development progress](PROGRESS.md), then [the delivery roadmap](ROADMAP.md). The current demo runs on Ethereum Sepolia (L1 testnet). An Ethereum L2 application is the next target, not the current deployment.
+For the complete walkthrough, read [PROJECT_GUIDE.md](PROJECT_GUIDE.md). Start with [live development progress](PROGRESS.md), then [the delivery roadmap](ROADMAP.md). The current demo runs on Ethereum Sepolia (L1 testnet). An Ethereum L2 application is the next target, not the current deployment.
 
 ## What exists now
 

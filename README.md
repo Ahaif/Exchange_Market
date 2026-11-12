@@ -2,6 +2,8 @@
 
 A full-stack learning project evolving into an Ethereum L2 exchange. Today it runs as a **Next.js trading terminal backed by Solidity contracts on Ethereum Sepolia**.
 
+**Start here: [Complete project guide](docs/PROJECT_GUIDE.md)** — deployment, architecture, file map, business logic, algorithms, running, testing and learning outcomes.
+
 [Live demo](https://hai-exchange-v1.serenecrown8.chatgpt.site) · [Architecture](docs/OVERVIEW.md) · [Progress](docs/PROGRESS.md) · [L2 roadmap](docs/ROADMAP.md)
 
 ## Run the project
