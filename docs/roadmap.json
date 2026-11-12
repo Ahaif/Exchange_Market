@@ -1,0 +1,64 @@
+{
+  "target": "Full-stack HAI Exchange on an Ethereum L2",
+  "proposedL2": "Base Sepolia \u2192 Base mainnet (proposal; no L2 deployment yet)",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Modern client and contract foundation",
+      "status": "done",
+      "evidence": [
+        "app/page.tsx",
+        "src/contracts/Exchange.sol",
+        "src/contracts/Token.sol",
+        "test/v1/contracts.test.mjs"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Persistent Sepolia deployment",
+      "status": "done",
+      "evidence": ["deployments/11155111.json", "scripts/deploy.mjs"]
+    },
+    {
+      "id": "M3",
+      "title": "Seeded, publicly readable Sepolia demo",
+      "status": "done",
+      "evidence": [
+        "scripts/seed-exchange.mjs",
+        "test/v1/seed.test.mjs",
+        "lib/contracts.ts",
+        "deployments/11155111.seed.json",
+        "deployments/website.json"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Onboarding and automated browser coverage",
+      "status": "in_progress",
+      "evidence": [
+        "app/components/MarketChart.tsx",
+        "lib/trades.ts",
+        "lib/candles.mjs",
+        "test/v1/candles.test.mjs"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "Event indexer, API, database and observability",
+      "status": "planned",
+      "evidence": []
+    },
+    {
+      "id": "M6",
+      "title": "Deploy and validate on Base Sepolia",
+      "status": "planned",
+      "evidence": []
+    },
+    {
+      "id": "M7",
+      "title": "Security review and L2 production readiness",
+      "status": "planned",
+      "evidence": []
+    }
+  ]
+}

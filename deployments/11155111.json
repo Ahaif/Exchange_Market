@@ -1,0 +1,11 @@
+{
+  "chainId": 11155111,
+  "deployer": "0xe552Ef6A23e2273EC0B21573a6B50720ce364A59",
+  "feeAccount": "0xe552Ef6A23e2273EC0B21573a6B50720ce364A59",
+  "feeBps": 25,
+  "token": "0xDE92DBfbb6338E5e883596d4BeA582ca7E525e2a",
+  "tokenTransaction": "0xe7f3b23bc01e31fe88f6c34142a89d20ce124fc18cea27768fe61aef0d868f47",
+  "exchange": "0x60dB75e1304F1b618F90DB444F3F4ef0ab15ef05",
+  "exchangeTransaction": "0xef504bf8dbe564d4a48ba2d95dc95a4314a9f00f6d115d62d58d8292b2c7b9d7",
+  "block": 12119865
+}

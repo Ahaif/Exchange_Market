@@ -22,4 +22,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/lib
+.env
+.env.*
+!.env.example
+.next/
+out/
+artifacts/
+*.tsbuildinfo
+.site-release/
+deployments/*.seed.lock
